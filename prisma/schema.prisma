@@ -14,17 +14,42 @@ model Admin {
 }
 
 model Blog {
-  id        Int      @id @default(autoincrement())
-  title     String
-  slug      String   @unique
-  content   String   @db.LongText
-  createdAt DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  title       String
+  slug        String   @unique
+  content     String   @db.LongText
+
+  coverImage  String?
+  type        BlogType @default(WEB)
+
+  createdAt   DateTime @default(now())
 }
 
 model Project {
   id          Int      @id @default(autoincrement())
   title       String
   description String   @db.LongText
+
+  category    ProjectCategory @default(WEB)
+
+  images      Json?
+  videoUrl    String?
   link        String?
   createdAt   DateTime @default(now())
 }
+
+enum BlogType {
+  WEB
+  AIML
+  DSA
+  BACKEND
+  OTHER
+}
+
+enum ProjectCategory {
+  WEB
+  AIML
+  MOBILE
+  OTHER
+}
+
