@@ -44,7 +44,7 @@ const Navbar = () => {
   bg-white backdrop-blur-lg
 "
 		>
-			<div className="mx-auto max-w-7xl px-4 ">
+			<div className="mx-auto max-w-[1440px] px-8  ">
 				{/* Top bar */}
 				<div className="flex h-14 items-center justify-between">
 					{/* Logo */}
@@ -114,20 +114,16 @@ const Navbar = () => {
     "
 							/>
 
+							{/* Mobile icon */}
 							<Download
 								size={16}
 								className="sm:hidden relative z-10"
 							/>
 
-							<span className="hidden sm:inline-flex items-center gap-1 relative z-10">
+							{/* Desktop text + icon */}
+							<span className="hidden sm:inline-flex items-center gap-1 relative z-10 whitespace-nowrap">
 								Download CV
-								<Image
-									src={downloadsvg}
-									alt="Download icon"
-									width={14}
-									height={14}
-									className="invert"
-								/>
+								<Download size={16} />
 							</span>
 						</Link>
 
