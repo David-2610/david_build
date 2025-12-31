@@ -1,18 +1,19 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/requireAdmin";
 
-type Params = {
-  params: { id: string };
-};
-
 // GET → fetch single project
-export async function GET(req: Request, { params }: Params) {
+export async function GET(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     requireAdmin(req);
 
+    const { id } = await context.params;
+
     const project = await prisma.project.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     });
 
     if (!project) {
@@ -29,14 +30,18 @@ export async function GET(req: Request, { params }: Params) {
 }
 
 // PUT → update project
-export async function PUT(req: Request, { params }: Params) {
+export async function PUT(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     requireAdmin(req);
 
+    const { id } = await context.params;
     const body = await req.json();
 
     const project = await prisma.project.update({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       data: {
         title: body.title,
         slug: body.slug,
@@ -59,12 +64,17 @@ export async function PUT(req: Request, { params }: Params) {
 }
 
 // DELETE → remove project
-export async function DELETE(req: Request, { params }: Params) {
+export async function DELETE(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     requireAdmin(req);
 
+    const { id } = await context.params;
+
     await prisma.project.delete({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     });
 
     return NextResponse.json({ success: true });
