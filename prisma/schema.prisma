@@ -8,35 +8,13 @@ datasource db {
 }
 
 model Admin {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
 }
 
-model Blog {
-  id          Int      @id @default(autoincrement())
-  title       String
-  slug        String   @unique
-  content     String   @db.LongText
 
-  coverImage  String?
-  type        BlogType @default(WEB)
-
-  createdAt   DateTime @default(now())
-}
-
-model Project {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String   @db.LongText
-
-  category    ProjectCategory @default(WEB)
-
-  images      Json?
-  videoUrl    String?
-  link        String?
-  createdAt   DateTime @default(now())
-}
 
 enum BlogType {
   WEB
@@ -46,10 +24,68 @@ enum BlogType {
   OTHER
 }
 
+model Blog {
+  id         Int      @id @default(autoincrement())
+  title      String
+  slug       String   @unique
+  content    String   @db.LongText
+  coverImage String?
+  type       BlogType @default(WEB)
+  createdAt  DateTime @default(now())
+}
+
+/* ---------------- PROJECTS ---------------- */
+
 enum ProjectCategory {
   WEB
   AIML
-  MOBILE
-  OTHER
+  GAME
 }
 
+enum ProjectStatus {
+  COMPLETED
+  IN_PROGRESS
+  EXPERIMENT
+}
+
+model Project {
+  id               Int               @id @default(autoincrement())
+  title            String
+  slug             String            @unique
+
+  shortDescription String            @db.VarChar(300)
+  description      String            @db.LongText
+
+  category         ProjectCategory   @default(WEB)
+  status           ProjectStatus     @default(COMPLETED)
+
+  techStack        Json               // ✅ FIXED
+
+  coverImage       String
+  images           Json?
+  videoUrl         String?
+
+  link             String?
+  githubUrl        String?
+
+  featured         Boolean           @default(false)
+  order            Int?
+
+  createdAt        DateTime          @default(now())
+
+  milestones       ProjectMilestone[]
+}
+
+
+model ProjectMilestone {
+  id        Int      @id @default(autoincrement())
+  projectId Int
+
+  title     String
+  summary   String   @db.VarChar(500)
+  date      DateTime?
+
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
