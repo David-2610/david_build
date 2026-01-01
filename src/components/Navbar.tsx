@@ -37,13 +37,7 @@ const Navbar = () => {
 	}, []);
 
 	return (
-		<nav
-			className="
-  sticky top-0 z-50
-  border-b border-white/20
-  bg-white backdrop-blur-lg
-"
-		>
+		<nav className="sticky top-0 z-50 border-b border-white/20 bg-white backdrop-blur-lg">
 			<div className="mx-auto max-w-[1440px] px-8  ">
 				{/* Top bar */}
 				<div className="flex h-14 items-center justify-between">
@@ -53,12 +47,7 @@ const Navbar = () => {
 							src={logo}
 							alt="David's Forge"
 							priority
-							className="
-                h-6 w-auto
-                sm:h-7
-                lg:h-10
-                transition-all duration-300
-              "
+							className="h-6 w-auto sm:h-7 lg:h-10 transition-all duration-300"
 						/>
 					</Link>
 
@@ -92,27 +81,9 @@ const Navbar = () => {
 						{/* CV Button */}
 						<Link
 							href="/email-cv"
-							className="
-    relative overflow-hidden
-    flex items-center gap-2
-    rounded-md font-semibold text-white
-    bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500
-    px-3 py-1.5 text-xs
-    sm:px-4 sm:py-2 sm:text-sm
-    transition-all duration-300
-    hover:scale-[1.03]
-    hover:shadow-lg hover:shadow-blue-500/30
-    active:scale-[0.97]
-  "
+							className="relative overflow-hidden flex items-center gap-2 rounded-md font-semibold text-white bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-blue-500/30 active:scale-[0.97]"
 						>
-							<span
-								className="
-      absolute inset-0
-      bg-gradient-to-r from-transparent via-white/20 to-transparent
-      translate-x-[-100%] hover:translate-x-[100%]
-      transition-transform duration-700
-    "
-							/>
+							<span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700" />
 
 							{/* Mobile icon */}
 							<Download

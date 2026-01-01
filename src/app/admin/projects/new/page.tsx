@@ -7,278 +7,395 @@ import { uploadFile } from "@/lib/upload";
 import { uploadVideo } from "@/lib/uploadVideo";
 
 type Category = "WEB" | "AIML" | "GAME";
+type Status = "COMPLETED" | "IN_PROGRESS" | "EXPERIMENT";
+
+type Milestone = {
+  title: string;
+  summary: string;
+};
+
+type UploadType = "cover" | "gallery" | "video" | null;
 
 export default function NewProjectPage() {
-	const router = useRouter();
+  const router = useRouter();
 
-	const [title, setTitle] = useState("");
-	const [slug, setSlug] = useState("");
-	const [shortDescription, setShortDescription] = useState("");
-	const [description, setDescription] = useState("");
-	const [category, setCategory] = useState<Category>("WEB");
-	const [techStack, setTechStack] = useState("");
-	const [coverImage, setCoverImage] = useState("");
-	const [featured, setFeatured] = useState(false);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState("");
-	const [uploadingImage, setUploadingImage] = useState(false);
-	const [uploadingVideo, setUploadingVideo] = useState(false);
-	const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  // ===== CORE =====
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [shortDescription, setShortDescription] = useState("");
+  const [description, setDescription] = useState("");
 
-	function generateSlug(value: string) {
-		return value
-			.toLowerCase()
-			.trim()
-			.replace(/[^a-z0-9]+/g, "-")
-			.replace(/(^-|-$)+/g, "");
-	}
+  // ===== META =====
+  const [category, setCategory] = useState<Category>("WEB");
+  const [status, setStatus] = useState<Status>("COMPLETED");
+  const [techStack, setTechStack] = useState("");
+  const [featured, setFeatured] = useState(false);
+  const [order, setOrder] = useState<number | "">("");
 
-	async function handleSubmit(e: React.FormEvent) {
-		e.preventDefault();
-		setError("");
-		setLoading(true);
+  // ===== MEDIA =====
+  const [coverImage, setCoverImage] = useState("");
+  const [images, setImages] = useState<string[]>([]);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
 
-		const token = localStorage.getItem("admin_token");
+  // ===== LINKS =====
+  const [link, setLink] = useState("");
+  const [githubUrl, setGithubUrl] = useState("");
 
-		const res = await fetch("/api/admin/projects", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
-			},
-			body: JSON.stringify({
-				title,
-				slug,
-				shortDescription,
-				description,
-				category,
-				techStack: techStack.split(",").map((t) => t.trim()),
-				coverImage,
-				videoUrl, // ✅ ADD THIS
-				featured,
-			}),
-		});
+  // ===== MILESTONES =====
+  const [milestones, setMilestones] = useState<Milestone[]>([]);
 
-		if (res.status === 401) {
-			adminLogout();
-			return;
-		}
+  // ===== UI =====
+  const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState<UploadType>(null);
 
-		if (!res.ok) {
-			setError("Failed to create project");
-			setLoading(false);
-			return;
-		}
+  function generateSlug(value: string) {
+    return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
+  }
 
-		router.push("/admin/projects");
-	}
+  function removeCoverImage() {
+    setCoverImage("");
+  }
 
-	return (
-		<div className="max-w-3xl space-y-6">
-			<h1 className="text-2xl font-bold text-[#2B41B0]">
-				Create Project
-			</h1>
+  function removeGalleryImage(index: number) {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  }
 
-			<form
-				onSubmit={handleSubmit}
-				className="space-y-5 rounded-xl border bg-white p-6 shadow-sm"
-			>
-				{error && (
-					<p className="rounded bg-red-50 p-3 text-sm text-red-600">
-						{error}
-					</p>
-				)}
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
 
-				{/* Title */}
-				<div>
-					<label className="block text-sm font-medium">Title</label>
-					<input
-						required
-						value={title}
-						onChange={(e) => {
-							setTitle(e.target.value);
-							setSlug(generateSlug(e.target.value));
-						}}
-						className="mt-1 w-full rounded border px-3 py-2"
-					/>
-				</div>
+    const token = localStorage.getItem("admin_token");
 
-				{/* Slug */}
-				<div>
-					<label className="block text-sm font-medium">Slug</label>
-					<input
-						required
-						value={slug}
-						onChange={(e) => setSlug(e.target.value)}
-						className="mt-1 w-full rounded border px-3 py-2"
-					/>
-				</div>
+    const res = await fetch("/api/admin/projects", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title,
+        slug,
+        shortDescription,
+        description,
+        category,
+        status,
+        techStack: techStack.split(",").map((t) => t.trim()),
+        coverImage,
+        images,
+        videoUrl,
+        link: link || null,
+        githubUrl: githubUrl || null,
+        featured,
+        order: order === "" ? null : Number(order),
+        milestones,
+      }),
+    });
 
-				{/* Short Description */}
-				<div>
-					<label className="block text-sm font-medium">
-						Short Description
-					</label>
-					<textarea
-						required
-						maxLength={300}
-						value={shortDescription}
-						onChange={(e) => setShortDescription(e.target.value)}
-						className="mt-1 w-full rounded border px-3 py-2"
-					/>
-				</div>
+    if (res.status === 401) {
+      adminLogout();
+      return;
+    }
 
-				{/* Full Description */}
-				<div>
-					<label className="block text-sm font-medium">
-						Full Description
-					</label>
-					<textarea
-						required
-						rows={6}
-						value={description}
-						onChange={(e) => setDescription(e.target.value)}
-						className="mt-1 w-full rounded border px-3 py-2"
-					/>
-				</div>
+    router.push("/admin/projects");
+  }
 
-				{/* Category */}
-				<div>
-					<label className="block text-sm font-medium">
-						Category
-					</label>
-					<select
-						value={category}
-						onChange={(e) =>
-							setCategory(e.target.value as Category)
-						}
-						className="mt-1 w-full rounded border px-3 py-2"
-					>
-						<option value="WEB">Web</option>
-						<option value="AIML">AI / ML</option>
-						<option value="GAME">Game</option>
-					</select>
-				</div>
+  return (
+    <div className="min-h-screen bg-gray-50 flex justify-center py-10 px-4">
+      <form onSubmit={handleSubmit} className="w-full max-w-5xl space-y-8">
+        <h1 className="text-3xl font-bold text-center text-[#2B41B0]">
+          Create New Project
+        </h1>
 
-				{/* Tech Stack */}
-				<div>
-					<label className="block text-sm font-medium">
-						Tech Stack (comma separated)
-					</label>
-					<input
-						value={techStack}
-						onChange={(e) => setTechStack(e.target.value)}
-						placeholder="Next.js, Prisma, MySQL"
-						className="mt-1 w-full rounded border px-3 py-2"
-					/>
-				</div>
+        {/* ================= BASIC INFO ================= */}
+        <section className="rounded-xl border bg-white p-6 space-y-4">
+          <h2 className="text-lg font-semibold">📘 Basic Information</h2>
 
-				{/* Cover Image */}
-				<div>
-					<label className="block text-sm font-medium">
-						Cover Image
-					</label>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="label">Project Title</label>
+              <input
+                required
+                value={title}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                  setSlug(generateSlug(e.target.value));
+                }}
+                className="input"
+              />
+            </div>
 
-					<input
-						type="file"
-						accept="image/*"
-						onChange={async (e) => {
-							if (!e.target.files?.[0]) return;
+            <div>
+              <label className="label">Slug</label>
+              <input
+                required
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                className="input"
+              />
+            </div>
+          </div>
 
-							setUploadingImage(true);
-							const url = await uploadFile(
-								e.target.files[0],
-								"projects"
-							);
-							setCoverImage(url);
-							setUploadingImage(false);
-						}}
-						className="mt-1 w-full"
-					/>
+          <div>
+            <label className="label">Short Description</label>
+            <textarea
+              maxLength={300}
+              value={shortDescription}
+              onChange={(e) => setShortDescription(e.target.value)}
+              className="input"
+            />
+          </div>
 
-					{uploadingImage && (
-						<p className="mt-1 text-sm text-gray-500">
-							Uploading image…
-						</p>
-					)}
+          <div>
+            <label className="label">Full Description</label>
+            <textarea
+              rows={5}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="input"
+            />
+          </div>
+        </section>
 
-					{coverImage && (
-						<img
-							src={coverImage}
-							className="mt-3 h-32 rounded border object-cover"
-							alt="Preview"
-						/>
-					)}
-				</div>
+        {/* ================= MEDIA ================= */}
+        <section className="rounded-xl border bg-white p-6 space-y-6">
+          <h2 className="text-lg font-semibold">🖼 Media Uploads</h2>
 
-				{/* video  */}
-				<div>
-					<label className="block text-sm font-medium">
-						Project Video (optional)
-					</label>
+          {/* Cover */}
+          <div className="border rounded-lg p-4">
+            <label className="label">Cover Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              disabled={uploading !== null}
+              onChange={async (e) => {
+                if (!e.target.files?.[0]) return;
+                setUploading("cover");
+                const url = await uploadFile(e.target.files[0], "projects");
+                setCoverImage(url);
+                setUploading(null);
+              }}
+            />
 
-					<input
-						type="file"
-						accept="video/*"
-						onChange={async (e) => {
-							if (!e.target.files?.[0]) return;
+            {uploading === "cover" && <UploadProgress label="Uploading cover…" />}
 
-							setUploadingVideo(true);
-							const url = await uploadVideo(
-								e.target.files[0],
-								"projects"
-							);
-							setVideoUrl(url);
-							setUploadingVideo(false);
-						}}
-						className="mt-1 w-full"
-					/>
+            {coverImage && (
+              <div className="relative mt-3 inline-block">
+                <img
+                  src={coverImage}
+                  className="h-40 rounded object-cover border"
+                />
+                <button
+                  type="button"
+                  onClick={removeCoverImage}
+                  className="absolute top-2 right-2 bg-black/70 text-white rounded-full px-2"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+          </div>
 
-					{uploadingVideo && (
-						<p className="mt-1 text-sm text-gray-500">
-							Uploading video…
-						</p>
-					)}
+          {/* Gallery */}
+          <div className="border rounded-lg p-4">
+            <label className="label">Gallery Images</label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              disabled={uploading !== null}
+              onChange={async (e) => {
+                if (!e.target.files) return;
+                setUploading("gallery");
+                const uploaded: string[] = [];
+                for (const file of Array.from(e.target.files)) {
+                  uploaded.push(await uploadFile(file, "projects"));
+                }
+                setImages((prev) => [...prev, ...uploaded]);
+                setUploading(null);
+              }}
+            />
 
-					{videoUrl && (
-						<video
-							src={videoUrl}
-							controls
-							className="mt-3 h-40 rounded border"
-						/>
-					)}
-				</div>
+            {uploading === "gallery" && (
+              <UploadProgress label="Uploading images…" />
+            )}
 
-				{/* Featured */}
-				<div className="flex items-center gap-2">
-					<input
-						type="checkbox"
-						checked={featured}
-						onChange={(e) => setFeatured(e.target.checked)}
-					/>
-					<label className="text-sm font-medium">
-						Featured Project
-					</label>
-				</div>
+            <div className="mt-4 grid grid-cols-4 gap-4">
+              {images.map((img, i) => (
+                <div
+                  key={i}
+                  className="relative group border rounded-lg overflow-hidden"
+                >
+                  <img
+                    src={img}
+                    className="h-24 w-full object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeGalleryImage(i)}
+                    className="absolute top-2 right-2 bg-black/70 text-white rounded-full px-2 opacity-0 group-hover:opacity-100 transition"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
 
-				{/* Actions */}
-				<div className="flex gap-3">
-					<button
-						disabled={loading || uploadingImage || uploadingVideo}
-						className="rounded bg-[#2B41B0] px-5 py-2 text-white font-semibold disabled:opacity-50"
-					>
-						{loading ? "Creating..." : "Create Project"}
-					</button>
+          {/* Video */}
+          <div className="border rounded-lg p-4">
+            <label className="label">Project Video</label>
+            <input
+              type="file"
+              accept="video/*"
+              disabled={uploading !== null}
+              onChange={async (e) => {
+                if (!e.target.files?.[0]) return;
+                setUploading("video");
+                const url = await uploadVideo(e.target.files[0], "projects");
+                setVideoUrl(url);
+                setUploading(null);
+              }}
+            />
 
-					<button
-						type="button"
-						onClick={() => router.push("/admin/projects")}
-						className="rounded border px-5 py-2 text-sm"
-					>
-						Cancel
-					</button>
-				</div>
-			</form>
-		</div>
-	);
+            {uploading === "video" && (
+              <UploadProgress label="Uploading video…" />
+            )}
+
+            {videoUrl && (
+              <video src={videoUrl} controls className="mt-3 h-48 rounded" />
+            )}
+          </div>
+        </section>
+
+        {/* ================= SETTINGS ================= */}
+        <section className="rounded-xl border bg-white p-6 space-y-4">
+          <h2 className="text-lg font-semibold">⚙ Project Settings</h2>
+
+          <div className="grid grid-cols-3 gap-4">
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value as Category)}
+              className="input"
+            >
+              <option value="WEB">Web</option>
+              <option value="AIML">AI / ML</option>
+              <option value="GAME">Game</option>
+            </select>
+
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value as Status)}
+              className="input"
+            >
+              <option value="COMPLETED">Completed</option>
+              <option value="IN_PROGRESS">In Progress</option>
+              <option value="EXPERIMENT">Experiment</option>
+            </select>
+
+            <input
+              type="number"
+              placeholder="Display Order"
+              value={order}
+              onChange={(e) =>
+                setOrder(e.target.value === "" ? "" : Number(e.target.value))
+              }
+              className="input"
+            />
+          </div>
+
+          <input
+            placeholder="Tech Stack (comma separated)"
+            value={techStack}
+            onChange={(e) => setTechStack(e.target.value)}
+            className="input"
+          />
+
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              placeholder="Live Project URL"
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+              className="input"
+            />
+            <input
+              placeholder="GitHub URL"
+              value={githubUrl}
+              onChange={(e) => setGithubUrl(e.target.value)}
+              className="input"
+            />
+          </div>
+
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={featured}
+              onChange={(e) => setFeatured(e.target.checked)}
+            />
+            Featured Project
+          </label>
+        </section>
+
+        {/* ================= MILESTONES ================= */}
+        <section className="rounded-xl border bg-white p-6 space-y-4">
+          <h2 className="text-lg font-semibold">🏁 Milestones</h2>
+
+          {milestones.map((m, i) => (
+            <div key={i} className="border rounded-lg p-4 space-y-2">
+              <input
+                placeholder="Milestone title"
+                value={m.title}
+                onChange={(e) => {
+                  const copy = [...milestones];
+                  copy[i].title = e.target.value;
+                  setMilestones(copy);
+                }}
+                className="input"
+              />
+              <textarea
+                placeholder="Milestone summary"
+                value={m.summary}
+                onChange={(e) => {
+                  const copy = [...milestones];
+                  copy[i].summary = e.target.value;
+                  setMilestones(copy);
+                }}
+                className="input"
+              />
+            </div>
+          ))}
+
+          <button
+            type="button"
+            onClick={() =>
+              setMilestones([...milestones, { title: "", summary: "" }])
+            }
+            className="text-blue-600 text-sm"
+          >
+            + Add milestone
+          </button>
+        </section>
+
+        {/* ================= ACTION ================= */}
+        <button
+          disabled={loading || uploading !== null}
+          className="w-full bg-[#2B41B0] text-white py-3 rounded-xl font-semibold disabled:opacity-50"
+        >
+          {loading ? "Creating..." : "Create Project"}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+/* ---------- Upload Progress ---------- */
+
+function UploadProgress({ label }: { label: string }) {
+  return (
+    <div className="mt-3 space-y-1">
+      <p className="text-sm text-gray-600">{label}</p>
+      <div className="h-2 w-full rounded bg-gray-200 overflow-hidden">
+        <div className="h-full bg-[#2B41B0] animate-progress" />
+      </div>
+    </div>
+  );
 }
