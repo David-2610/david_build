@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 
 // POST /api/admin/logout
-export async function POST() {
-  const cookieStore = await cookies(); // ✅ FIX
+export async function adminLogout() {
+  await fetch("/api/admin/logout", {
+    method: "POST",
+    credentials: "include",
+  });
 
-  cookieStore.delete("admin_session");
-
-  return NextResponse.json({ success: true });
+  window.location.href = "/admin/login";
 }
+

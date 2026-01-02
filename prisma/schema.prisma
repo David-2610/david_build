@@ -16,23 +16,36 @@ model Admin {
 
 
 
-enum BlogType {
-  WEB
-  AIML
-  DSA
-  BACKEND
-  OTHER
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
 }
 
 model Blog {
-  id         Int      @id @default(autoincrement())
-  title      String
-  slug       String   @unique
-  content    String   @db.LongText
-  coverImage String?
-  type       BlogType @default(WEB)
-  createdAt  DateTime @default(now())
+  id              Int        @id @default(autoincrement())
+  title           String
+  slug            String     @unique
+  excerpt         String     @db.VarChar(300)
+  content         String     @db.LongText
+
+  coverImage      String?
+  images          Json?
+  category        String?
+  tags            Json?
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  ogImage         String?
+
+  status          BlogStatus @default(DRAFT)
+  featured        Boolean    @default(false)
+
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 }
+
+
 
 /* ---------------- PROJECTS ---------------- */
 

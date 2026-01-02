@@ -1,17 +1,15 @@
-import { verifyToken } from "@/lib/token";
+import { cookies } from "next/headers";
 
-export function requireAdmin(req: Request) {
-  const auth = req.headers.get("authorization");
+/**
+ * Throws if admin session is missing.
+ * Returns adminId if authenticated.
+ */
+export function requireAdmin() {
+  const session = cookies().get("admin_session");
 
-  if (!auth || !auth.startsWith("Bearer ")) {
-    throw new Error("UNAUTHORIZED");
+  if (!session) {
+    throw new Error("Unauthorized");
   }
 
-  const token = auth.split(" ")[1];
-
-  try {
-    return verifyToken(token);
-  } catch {
-    throw new Error("UNAUTHORIZED");
-  }
+  return Number(session.value);
 }
