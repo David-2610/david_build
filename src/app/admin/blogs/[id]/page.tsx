@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { adminLogout } from "@/lib/adminAuth";
 import { uploadFile } from "@/lib/upload";
 import RichTextEditor from "@/components/editor/RichTextEditor";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 
 type BlogStatus = "DRAFT" | "PUBLISHED";
 type UploadType = "cover" | "gallery" | "og" | null;
@@ -32,6 +33,7 @@ type BlogForm = {
 export default function EditBlogPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const { token } = useAdminAuth();
 
   const [form, setForm] = useState<BlogForm | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,7 +42,7 @@ export default function EditBlogPage() {
 
 /* ================= FETCH BLOG ================= */
 useEffect(() => {
-  const token = localStorage.getItem("admin_token");
+  if (!token) return;
 
   fetch(`/api/admin/blogs/${id}`, {
     headers: {
@@ -83,16 +85,15 @@ useEffect(() => {
     .catch(() => {
       setLoading(false);
     });
-}, [id]);
+}, [id, token]);
 
 
   /* ================= UPDATE ================= */
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
-    if (!form) return;
+    if (!form || !token) return;
 
     setSaving(true);
-    const token = localStorage.getItem("admin_token");
 
     const res = await fetch(`/api/admin/blogs/${id}`, {
       method: "PUT",
@@ -134,8 +135,7 @@ useEffect(() => {
   /* ================= DELETE ================= */
   async function handleDelete() {
     if (!confirm("Delete this blog permanently?")) return;
-
-    const token = localStorage.getItem("admin_token");
+    if (!token) return;
 
     await fetch(`/api/admin/blogs/${id}`, {
       method: "DELETE",

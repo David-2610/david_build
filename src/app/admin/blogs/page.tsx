@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AdminShell from "@/app/admin/AdminShell";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
+
 type Blog = {
   id: number;
   title: string;
@@ -12,13 +14,18 @@ type Blog = {
 };
 
 export default function AdminBlogsPage() {
+  const { token } = useAdminAuth();
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
+    if (!token) return;
+
     fetch("/api/admin/blogs", {
-      credentials: "include", // ✅ COOKIE AUTH
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then(async (res) => {
         if (res.status === 401) {
@@ -37,7 +44,7 @@ export default function AdminBlogsPage() {
         setBlogs([]);
         setLoading(false);
       });
-  }, [router]);
+  }, [token, router]);
 
   return (
     <AdminShell>
