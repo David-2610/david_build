@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminLogout } from "@/lib/adminAuth";
 
-export function useAdminAuth() {
+export function useAdminSessionTimer() {
   const router = useRouter();
   const [remaining, setRemaining] = useState<number>(0);
 

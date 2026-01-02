@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import { adminLogout } from "@/lib/adminAuth";
 import { uploadFile } from "@/lib/upload";
 import RichTextEditor from "@/components/editor/RichTextEditor";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 
 type BlogStatus = "DRAFT" | "PUBLISHED";
 type UploadType = "cover" | "gallery" | "og" | null;
 
 export default function NewBlogPage() {
   const router = useRouter();
+  const { token } = useAdminAuth();
 
   /* ================= CORE ================= */
   const [title, setTitle] = useState("");
@@ -46,9 +48,9 @@ export default function NewBlogPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!token) return;
+    
     setSaving(true);
-
-    const token = localStorage.getItem("admin_token");
 
     const res = await fetch("/api/admin/blogs", {
       method: "POST",

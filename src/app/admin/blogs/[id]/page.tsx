@@ -38,40 +38,53 @@ export default function EditBlogPage() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState<UploadType>(null);
 
-  /* ================= FETCH BLOG ================= */
-  useEffect(() => {
-    const token = localStorage.getItem("admin_token");
+/* ================= FETCH BLOG ================= */
+useEffect(() => {
+  const token = localStorage.getItem("admin_token");
 
-    fetch(`/api/admin/blogs/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
+  fetch(`/api/admin/blogs/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then(async (res) => {
+      if (res.status === 401) {
+        console.warn("Unauthorized – token preserved (Step 1)");
+        return null;
+      }
+
+      return res.json();
     })
-      .then((res) => {
-        if (res.status === 401) adminLogout();
-        return res.json();
-      })
-      .then((data) => {
-        setForm({
-          title: data.title,
-          slug: data.slug,
-          excerpt: data.excerpt,
-          content: data.content,
+    .then((data) => {
+      if (!data) return;
 
-          coverImage: data.coverImage ?? "",
-          images: data.images ?? [],
+      setForm({
+        title: data.title,
+        slug: data.slug,
+        excerpt: data.excerpt,
+        content: data.content,
 
-          category: data.category ?? "",
-          tags: (data.tags ?? []).join(", "),
+        coverImage: data.coverImage ?? "",
+        images: data.images ?? [],
 
-          metaTitle: data.metaTitle ?? "",
-          metaDescription: data.metaDescription ?? "",
-          ogImage: data.ogImage ?? "",
+        category: data.category ?? "",
+        tags: (data.tags ?? []).join(", "),
 
-          status: data.status,
-          featured: data.featured,
-        });
-        setLoading(false);
+        metaTitle: data.metaTitle ?? "",
+        metaDescription: data.metaDescription ?? "",
+        ogImage: data.ogImage ?? "",
+
+        status: data.status,
+        featured: data.featured,
       });
-  }, [id]);
+
+      setLoading(false);
+    })
+    .catch(() => {
+      setLoading(false);
+    });
+}, [id]);
+
 
   /* ================= UPDATE ================= */
   async function handleSave(e: React.FormEvent) {

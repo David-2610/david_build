@@ -1,9 +1,9 @@
 "use client";
 
-import { useAdminAuth } from "@/hooks/useAdminAuth";
-
+import { useAdminSessionTimer } from "@/hooks/useAdminAuth";
+import AdminShell from "@/app/admin/AdminShell";
 export default function AdminDashboard() {
-  const remaining = useAdminAuth();
+  const remaining = useAdminSessionTimer();
 
   function format(ms: number) {
     const minutes = Math.floor(ms / 60000);
@@ -14,6 +14,7 @@ export default function AdminDashboard() {
   const expiringSoon = remaining < 5 * 60 * 1000;
 
   return (
+    <AdminShell>
     <div className="space-y-8">
       <h1 className="text-2xl font-bold text-[#2B41B0]">
         Dashboard
@@ -57,6 +58,7 @@ export default function AdminDashboard() {
         />
       </div>
     </div>
+    </AdminShell>
   );
 }
 

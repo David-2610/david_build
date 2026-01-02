@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { adminLogout } from "@/lib/adminAuth";
 import { uploadFile } from "@/lib/upload";
 import { uploadVideo } from "@/lib/uploadVideo";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 
 type Category = "WEB" | "AIML" | "GAME";
 type Status = "COMPLETED" | "IN_PROGRESS" | "EXPERIMENT";
@@ -18,6 +19,7 @@ type UploadType = "cover" | "gallery" | "video" | null;
 
 export default function NewProjectPage() {
   const router = useRouter();
+  const { token } = useAdminAuth();
 
   // ===== CORE =====
   const [title, setTitle] = useState("");
@@ -62,9 +64,9 @@ export default function NewProjectPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!token) return;
+    
     setLoading(true);
-
-    const token = localStorage.getItem("admin_token");
 
     const res = await fetch("/api/admin/projects", {
       method: "POST",

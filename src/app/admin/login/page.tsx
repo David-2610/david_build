@@ -4,9 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Loader2, Lock } from "lucide-react";
+import AdminShell from "@/app/admin/AdminShell";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 
 export default function AdminLogin() {
   const router = useRouter();
+  const { setToken } = useAdminAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -32,7 +35,8 @@ export default function AdminLogin() {
         return;
       }
 
-      localStorage.setItem("admin_token", data.token);
+      // Use context to set token instead of localStorage directly
+      setToken(data.token);
       localStorage.setItem(
         "admin_token_exp",
         String(Date.now() + 60 * 60 * 1000)
@@ -49,6 +53,7 @@ export default function AdminLogin() {
   }
 
   return (
+    <AdminShell>
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#2B41B0]/10 via-white to-[#7E57C2]/10 px-4">
       <motion.form
         onSubmit={handleLogin}
@@ -124,5 +129,6 @@ export default function AdminLogin() {
         </motion.button>
       </motion.form>
     </div>
+    </AdminShell>
   );
 }

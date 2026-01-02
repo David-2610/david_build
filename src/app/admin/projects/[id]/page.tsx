@@ -5,12 +5,14 @@ import { useParams, useRouter } from "next/navigation";
 import { adminLogout } from "@/lib/adminAuth";
 import { uploadFile } from "@/lib/upload";
 import { uploadVideo } from "@/lib/uploadVideo";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 
 type UploadType = "cover" | "gallery" | "video" | null;
 
 export default function EditProjectPage() {
 	const { id } = useParams();
 	const router = useRouter();
+	const { token } = useAdminAuth();
 
 	const [form, setForm] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
@@ -19,7 +21,7 @@ export default function EditProjectPage() {
 
 	/* ================= FETCH ================= */
 	useEffect(() => {
-		const token = localStorage.getItem("admin_token");
+		if (!token) return;
 
 		fetch(`/api/admin/projects/${id}`, {
 			headers: { Authorization: `Bearer ${token}` },
@@ -37,14 +39,14 @@ export default function EditProjectPage() {
 				});
 				setLoading(false);
 			});
-	}, [id]);
+	}, [id, token]);
 
 	/* ================= SAVE ================= */
 	async function handleSave(e: React.FormEvent) {
 		e.preventDefault();
+		if (!token) return;
+		
 		setSaving(true);
-
-		const token = localStorage.getItem("admin_token");
 
 		const res = await fetch(`/api/admin/projects/${id}`, {
 			method: "PUT",
@@ -67,8 +69,7 @@ export default function EditProjectPage() {
 	/* ================= DELETE ================= */
 	async function handleDelete() {
 		if (!confirm("Delete this project permanently?")) return;
-
-		const token = localStorage.getItem("admin_token");
+		if (!token) return;
 
 		await fetch(`/api/admin/projects/${id}`, {
 			method: "DELETE",
