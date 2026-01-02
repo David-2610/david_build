@@ -7,13 +7,16 @@ export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
 
-    console.log("LOGIN EMAIL:", email);
+    if (!email || !password) {
+      return NextResponse.json(
+        { message: "Email and password required" },
+        { status: 400 }
+      );
+    }
 
     const admin = await prisma.admin.findUnique({
       where: { email },
     });
-
-    console.log("ADMIN FOUND:", admin);
 
     if (!admin) {
       return NextResponse.json(
@@ -22,11 +25,7 @@ export async function POST(req: Request) {
       );
     }
 
-    console.log("DB PASSWORD:", admin.password);
-    console.log("INPUT PASSWORD:", password);
-
     const valid = await bcrypt.compare(password, admin.password);
-    console.log("PASSWORD MATCH:", valid);
 
     if (!valid) {
       return NextResponse.json(
@@ -40,13 +39,15 @@ export async function POST(req: Request) {
       email: admin.email,
     });
 
-    return NextResponse.json({ token, expiresIn: "2h" });
+    return NextResponse.json({
+      token,
+      expiresIn: "2h",
+    });
   } catch (err) {
-    console.error("LOGIN ERROR:", err);
+    console.error("ADMIN LOGIN ERROR:", err);
     return NextResponse.json(
       { message: "Login failed" },
       { status: 500 }
     );
   }
 }
-

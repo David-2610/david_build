@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import AdminShell from "@/app/admin/AdminShell";
 type Blog = {
   id: number;
   title: string;
@@ -40,7 +40,8 @@ export default function AdminBlogsPage() {
   }, [router]);
 
   return (
-    <div className="space-y-6">
+    <AdminShell>
+      <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Blogs</h1>
         <Link
@@ -73,5 +74,6 @@ export default function AdminBlogsPage() {
         </div>
       )}
     </div>
+    </AdminShell>
   );
 }
