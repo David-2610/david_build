@@ -12,6 +12,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
   const editor = useEditor({
     extensions: [StarterKit],
     content: value,
+    immediatelyRender: false, // ✅ IMPORTANT FIX
     onUpdate({ editor }) {
       onChange(editor.getHTML());
     },
@@ -22,28 +23,24 @@ export default function RichTextEditor({ value, onChange }: Props) {
   return (
     <div className="border rounded-lg">
       <div className="border-b px-3 py-2 flex gap-3 text-sm">
-        <button onClick={() => editor.chain().focus().toggleBold().run()}>
+        <button type="button" onClick={() => editor.chain().focus().toggleBold().run()}>
           <b>B</b>
         </button>
-        <button onClick={() => editor.chain().focus().toggleItalic().run()}>
+        <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()}>
           <i>I</i>
         </button>
-        <button onClick={() => editor.chain().focus().toggleBulletList().run()}>
+        <button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()}>
           • List
         </button>
         <button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
-          }
+          type="button"
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         >
           H2
         </button>
       </div>
 
-      <EditorContent
-        editor={editor}
-        className="prose max-w-none p-4"
-      />
+      <EditorContent editor={editor} className="prose max-w-none p-4" />
     </div>
   );
 }

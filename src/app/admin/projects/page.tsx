@@ -1,171 +1,120 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import AdminShell from "@/app/admin/AdminShell";
-import { useAdminAuth } from "@/contexts/AdminAuthContext";
-import {
-  Pencil,
-  Star,
-  Layers,
-  Calendar,
-} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAdminData } from "@/contexts/AdminDataContext";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Pencil, Trash } from "lucide-react";
+import { adminFetch } from "@/lib/adminFetch";
 
-type Project = {
-  id: number;
-  title: string;
-  slug: string;
-  shortDescription: string;
-  category: string;
-  status: string;
-  techStack: string[];
-  coverImage: string;
-  featured: boolean;
-  createdAt: string;
-};
-
-export default function AdminProjectsPage() {
-  const { token } = useAdminAuth();
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!token) return;
-
-    fetch("/api/admin/projects", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          console.warn("Failed to fetch projects");
-          return [];
-        }
-
-        const data = await res.json();
-        return Array.isArray(data) ? data : [];
-      })
-      .then((data) => {
-        setProjects(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setProjects([]);
-        setLoading(false);
-      });
-  }, [token]);
+export default function AdminProjects() {
+  const router = useRouter();
+  const { projects } = useAdminData();
 
   return (
-    <AdminShell>
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-bold text-[#2B41B0]">
-            Projects
-          </h1>
-
-          <Link
-            href="/admin/projects/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-[#2B41B0] px-4 py-2 text-sm font-semibold text-white hover:scale-[1.05] transition"
-          >
-            + New Project
-          </Link>
-        </div>
-
-        {/* Loading */}
-        {loading && (
-          <p className="text-gray-500">Loading projects…</p>
-        )}
-
-        {/* Grid */}
-        {!loading && projects.length > 0 && (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project) => (
-              <div
-                key={project.id}
-                className="group rounded-2xl border bg-white shadow-sm transition hover:shadow-lg hover:-translate-y-1"
-              >
-                {/* Image */}
-                <div className="relative h-40 w-full overflow-hidden rounded-t-2xl">
-                  <Image
-                    src={project.coverImage}
-                    alt={project.title}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-
-                  {project.featured && (
-                    <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-[#2B41B0] px-3 py-1 text-xs font-semibold text-white">
-                      <Star className="h-3 w-3" />
-                      Featured
-                    </span>
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="space-y-3 p-5">
-                  <h3 className="text-lg font-semibold text-[#2B41B0]">
-                    {project.title}
-                  </h3>
-
-                  {project.shortDescription && (
-                    <p className="text-sm text-gray-600 line-clamp-3">
-                      {project.shortDescription}
-                    </p>
-                  )}
-
-                  {/* Meta */}
-                  <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500">
-                    <span className="flex items-center gap-1">
-                      <Layers className="h-3 w-3" />
-                      {project.category}
-                    </span>
-
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {new Date(project.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-
-                  {/* Tech Stack */}
-                  {project.techStack?.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {project.techStack.map((tech) => (
-                        <span
-                          key={tech}
-                          className="rounded-full bg-[#2B41B0]/10 px-3 py-1 text-xs font-medium text-[#2B41B0]"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Actions */}
-                  <div className="pt-3">
-                    <Link
-                      href={`/admin/projects/${project.id}`}
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-[#2B41B0] hover:underline"
-                    >
-                      <Pencil className="h-4 w-4" />
-                      Edit Project
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Empty state */}
-        {!loading && projects.length === 0 && (
-          <div className="rounded-xl border bg-white p-10 text-center text-gray-500">
-            No projects found. Create your first project.
-          </div>
-        )}
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Projects</h1>
+        <Button onClick={() => router.push("/admin/projects/new")}>
+          <Plus className="mr-2 h-4 w-4" />
+          Add Project
+        </Button>
       </div>
-    </AdminShell>
+
+      {/* Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {projects?.map((project: any) => (
+          <div
+            key={project.id}
+            className="rounded-xl border bg-card overflow-hidden shadow-sm hover:shadow-md transition"
+          >
+            {/* Cover */}
+            <img
+              src={project?.coverImage}
+              alt={project?.title}
+              className="h-48 w-full object-cover"
+            />
+
+            {/* Content */}
+            <div className="p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-lg">{project.title}</h2>
+                <Badge>{project.status}</Badge>
+              </div>
+
+              <p className="text-sm text-muted-foreground">
+                {project.shortDescription}
+              </p>
+
+              {/* Metadata */}
+              <div className="flex flex-wrap gap-2 text-xs">
+                <Badge variant="outline">{project.category}</Badge>
+                {project.featured && <Badge>Featured</Badge>}
+                <Badge variant="secondary">Views: {project.views}</Badge>
+              </div>
+
+              {/* Tech Stack */}
+              <div className="flex flex-wrap gap-1">
+                {Array.isArray(project.techStack) &&
+                  project.techStack.map((tech: string) => (
+                    <Badge key={tech} variant="secondary">
+                      {tech}
+                    </Badge>
+                  ))}
+              </div>
+
+              {/* Timeline */}
+              <div className="text-xs text-muted-foreground">
+                <p><b>Start:</b> {project.startDate ?? "—"}</p>
+                <p><b>End:</b> {project.endDate ?? "—"}</p>
+                <p><b>Slug:</b> {project.slug}</p>
+              </div>
+
+              {/* Links */}
+              <div className="text-xs">
+                {project.link && <p>🔗 {project.link}</p>}
+                {project.githubUrl && <p>🐙 {project.githubUrl}</p>}
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 pt-2">
+                <Button
+                  size="sm"
+                  onClick={() =>
+                    router.push(`/admin/projects/${project.id}`)
+                  }
+                >
+                  <Pencil className="mr-1 h-4 w-4" />
+                  Edit
+                </Button>
+
+                <Button
+  size="sm"
+  variant="destructive"
+  onClick={async () => {
+    const ok = confirm(
+      `Delete project "${project.title}" permanently?`
+    );
+    if (!ok) return;
+
+    await adminFetch(`/api/admin/projects/${project.id}`, {
+      method: "DELETE",
+    });
+
+    // refresh admin state
+    window.location.reload();
+  }}
+>
+  <Trash className="mr-1 h-4 w-4" />
+  Delete
+</Button>
+
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

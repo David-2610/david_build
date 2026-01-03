@@ -1,80 +1,67 @@
 "use client";
 
-import { useAdminSessionTimer } from "@/hooks/useAdminAuth";
-import AdminShell from "@/app/admin/AdminShell";
-export default function AdminDashboard() {
-  const remaining = useAdminSessionTimer();
+import { useAdminData } from "@/contexts/AdminDataContext";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
-  function format(ms: number) {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = Math.floor((ms % 60000) / 1000);
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+export default function AdminDashboard() {
+  const { dashboard } = useAdminData();
+
+  // First-ever load fallback (no cache yet)
+  if (!dashboard) {
+    return (
+      <p className="text-muted-foreground">
+        Preparing dashboard…
+      </p>
+    );
   }
 
-  const expiringSoon = remaining < 5 * 60 * 1000;
-
   return (
-    <AdminShell>
-    <div className="space-y-8">
-      <h1 className="text-2xl font-bold text-[#2B41B0]">
-        Dashboard
-      </h1>
+    <div className="space-y-6">
+      <h1 className="text-3xl font-bold">Dashboard</h1>
 
-      {/* Session Card */}
-      <div
-        className={`rounded-xl border p-5 shadow-sm ${
-          expiringSoon
-            ? "border-red-300 bg-red-50"
-            : "bg-white"
-        }`}
-      >
-        <p className="text-sm text-gray-500">
-          Session expires in
-        </p>
-        <p
-          className={`mt-1 text-2xl font-semibold ${
-            expiringSoon
-              ? "text-red-500"
-              : "text-[#2B41B0]"
-          }`}
-        >
-          {remaining > 0 ? format(remaining) : "Expired"}
-        </p>
+      {/* Stats cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <StatCard title="Projects" value={dashboard.projects} />
+        <StatCard title="Blogs" value={dashboard.blogs} />
+        <StatCard title="Blog Views" value={dashboard.blogViews} />
+        <StatCard title="Project Views" value={dashboard.projectViews} />
+        <StatCard title="Published Blogs" value={dashboard.publishedBlogs} />
+        <StatCard title="Draft Blogs" value={dashboard.draftBlogs} />
       </div>
 
-      {/* Quick Overview */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <OverviewCard
-          title="Projects"
-          value="Manage portfolio projects"
-        />
-        <OverviewCard
-          title="Featured"
-          value="Homepage highlights"
-        />
-        <OverviewCard
-          title="Blogs"
-          value="Coming soon"
-        />
-      </div>
+      {/* Charts placeholder */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Views Overview</CardTitle>
+        </CardHeader>
+        <CardContent className="text-muted-foreground">
+          Charts hook ready (Recharts / Chart.js)
+        </CardContent>
+      </Card>
     </div>
-    </AdminShell>
   );
 }
 
-function OverviewCard({
+function StatCard({
   title,
   value,
 }: {
   title: string;
-  value: string;
+  value: number;
 }) {
   return (
-    <div className="rounded-xl border bg-white p-6 shadow-sm">
-      <p className="text-sm text-gray-500">{title}</p>
-      <p className="mt-2 font-semibold text-[#2B41B0]">
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm">{title}</CardTitle>
+      </CardHeader>
+      <CardContent className="text-3xl font-bold">
         {value}
-      </p>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

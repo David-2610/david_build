@@ -2,88 +2,96 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { adminLogout } from "@/lib/adminAuth";
 import { uploadFile } from "@/lib/upload";
 import { uploadVideo } from "@/lib/uploadVideo";
-import { useAdminAuth } from "@/contexts/AdminAuthContext";
+import { adminFetch } from "@/lib/adminFetch";
+import { useAdminData } from "@/contexts/AdminDataContext";
 
+type Category = "WEB" | "AIML" | "GAME";
+type Status = "COMPLETED" | "IN_PROGRESS" | "EXPERIMENT";
 type UploadType = "cover" | "gallery" | "video" | null;
+
+type Milestone = {
+	title: string;
+	summary: string;
+	date?: string | null;
+};
 
 export default function EditProjectPage() {
 	const { id } = useParams();
 	const router = useRouter();
-	const { token } = useAdminAuth();
+	const { refreshProjects, refreshDashboard } = useAdminData();
 
 	const [form, setForm] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 	const [uploading, setUploading] = useState<UploadType>(null);
 
+	const { slug } = useParams();
+
 	/* ================= FETCH ================= */
 	useEffect(() => {
-		if (!token) return;
-
-		fetch(`/api/admin/projects/${id}`, {
-			headers: { Authorization: `Bearer ${token}` },
+	  if (!slug) return;
+	
+	  fetch(`/api/projects/${slug}`, { cache: "no-store" })
+		.then((res) => {
+		  if (!res.ok) throw new Error("Project not found");
+		  return res.json();
 		})
-			.then((res) => {
-				if (res.status === 401) adminLogout();
-				return res.json();
-			})
-			.then((data) => {
-				setForm({
-					...data,
-					techStack: data.techStack.join(", "),
-					images: data.images ?? [],
-					videoUrl: data.videoUrl ?? null,
-				});
-				setLoading(false);
-			});
-	}, [id, token]);
+		.then((data) => {
+		  setForm({
+			...data,
+			techStack: Array.isArray(data.techStack)
+			  ? data.techStack.join(", ")
+			  : "",
+			images: data.images ?? [],
+			startDate: data.startDate
+			  ? data.startDate.slice(0, 10)
+			  : "",
+			endDate: data.endDate
+			  ? data.endDate.slice(0, 10)
+			  : "",
+			milestones: data.milestones ?? [],
+		  });
+		  setLoading(false);
+		})
+		.catch(() => {
+		  router.push("/admin/projects");
+		});
+	}, [slug, router]);
+	
 
 	/* ================= SAVE ================= */
 	async function handleSave(e: React.FormEvent) {
 		e.preventDefault();
-		if (!token) return;
-		
 		setSaving(true);
 
-		const res = await fetch(`/api/admin/projects/${id}`, {
+		await adminFetch(`/api/admin/projects/${id}`, {
 			method: "PUT",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
-			},
 			body: JSON.stringify({
 				...form,
 				techStack: form.techStack
 					.split(",")
 					.map((t: string) => t.trim()),
+				order: form.order === "" ? null : Number(form.order),
+				startDate: form.startDate || null,
+				endDate: form.endDate || null,
 			}),
 		});
 
-		if (res.status === 401) adminLogout();
+		refreshProjects();
+		refreshDashboard();
 		router.push("/admin/projects");
 	}
 
 	/* ================= DELETE ================= */
 	async function handleDelete() {
 		if (!confirm("Delete this project permanently?")) return;
-		if (!token) return;
 
-		await fetch(`/api/admin/projects/${id}`, {
-			method: "DELETE",
-			headers: { Authorization: `Bearer ${token}` },
-		});
-
+		await adminFetch(`/api/admin/projects/${id}`, { method: "DELETE" });
+		refreshProjects();
+		refreshDashboard();
 		router.push("/admin/projects");
-	}
-
-	function removeGalleryImage(index: number) {
-		setForm({
-			...form,
-			images: form.images.filter((_: any, i: number) => i !== index),
-		});
 	}
 
 	if (loading) return <p className="p-10">Loading…</p>;
@@ -96,7 +104,7 @@ export default function EditProjectPage() {
 					Edit Project
 				</h1>
 
-				{/* ================= BASIC ================= */}
+				{/* BASIC */}
 				<Section title="📘 Basic Information">
 					<TwoCol>
 						<Input
@@ -118,7 +126,6 @@ export default function EditProjectPage() {
 							setForm({ ...form, shortDescription: v })
 						}
 					/>
-
 					<Textarea
 						label="Full Description"
 						rows={5}
@@ -127,14 +134,12 @@ export default function EditProjectPage() {
 					/>
 				</Section>
 
-				{/* ================= MEDIA ================= */}
+				{/* MEDIA */}
 				<Section title="🖼 Media">
-					{/* Cover */}
 					<MediaBlock label="Cover Image">
 						<input
 							type="file"
 							accept="image/*"
-							disabled={uploading !== null}
 							onChange={async (e) => {
 								if (!e.target.files?.[0]) return;
 								setUploading("cover");
@@ -146,9 +151,6 @@ export default function EditProjectPage() {
 								setUploading(null);
 							}}
 						/>
-
-						{uploading === "cover" && <UploadProgress />}
-
 						{form.coverImage && (
 							<Preview
 								src={form.coverImage}
@@ -159,22 +161,19 @@ export default function EditProjectPage() {
 						)}
 					</MediaBlock>
 
-					{/* Gallery */}
-					<MediaBlock label="Gallery Images">
+					<MediaBlock label="Gallery">
 						<input
 							type="file"
 							accept="image/*"
 							multiple
-							disabled={uploading !== null}
 							onChange={async (e) => {
 								if (!e.target.files) return;
 								setUploading("gallery");
-								const uploaded: string[] = [];
-								for (const file of Array.from(e.target.files)) {
+								const uploaded = [];
+								for (const f of Array.from(e.target.files))
 									uploaded.push(
-										await uploadFile(file, "projects")
+										await uploadFile(f, "projects")
 									);
-								}
 								setForm({
 									...form,
 									images: [...form.images, ...uploaded],
@@ -182,62 +181,38 @@ export default function EditProjectPage() {
 								setUploading(null);
 							}}
 						/>
-
-						{uploading === "gallery" && <UploadProgress />}
-
 						<div className="grid grid-cols-4 gap-4 mt-4">
 							{form.images.map((img: string, i: number) => (
 								<Preview
 									key={i}
 									src={img}
-									onRemove={() => removeGalleryImage(i)}
+									onRemove={() =>
+										setForm({
+											...form,
+											images: form.images.filter(
+												(_: any, idx: number) =>
+													idx !== i
+											),
+										})
+									}
 								/>
 							))}
 						</div>
 					</MediaBlock>
-
-					{/* Video */}
-					<MediaBlock label="Project Video">
-						<input
-							type="file"
-							accept="video/*"
-							disabled={uploading !== null}
-							onChange={async (e) => {
-								if (!e.target.files?.[0]) return;
-								setUploading("video");
-								const url = await uploadVideo(
-									e.target.files[0],
-									"projects"
-								);
-								setForm({ ...form, videoUrl: url });
-								setUploading(null);
-							}}
-						/>
-
-						{uploading === "video" && <UploadProgress />}
-
-						{form.videoUrl && (
-							<video
-								src={form.videoUrl}
-								controls
-								className="mt-3 h-40 rounded border"
-							/>
-						)}
-					</MediaBlock>
 				</Section>
 
-				{/* ================= SETTINGS ================= */}
+				{/* SETTINGS */}
 				<Section title="⚙ Settings">
 					<TwoCol>
 						<Select
 							value={form.category}
-							onChange={(v) => setForm({ ...form, category: v })}
 							options={["WEB", "AIML", "GAME"]}
+							onChange={(v) => setForm({ ...form, category: v })}
 						/>
 						<Select
 							value={form.status}
-							onChange={(v) => setForm({ ...form, status: v })}
 							options={["COMPLETED", "IN_PROGRESS", "EXPERIMENT"]}
+							onChange={(v) => setForm({ ...form, status: v })}
 						/>
 					</TwoCol>
 
@@ -249,16 +224,22 @@ export default function EditProjectPage() {
 
 					<TwoCol>
 						<Input
-							label="Live URL"
-							value={form.link || ""}
-							onChange={(v) => setForm({ ...form, link: v })}
+							label="Start Date"
+							value={form.startDate}
+							onChange={(v) => setForm({ ...form, startDate: v })}
 						/>
 						<Input
-							label="GitHub URL"
-							value={form.githubUrl || ""}
-							onChange={(v) => setForm({ ...form, githubUrl: v })}
+							label="End Date"
+							value={form.endDate}
+							onChange={(v) => setForm({ ...form, endDate: v })}
 						/>
 					</TwoCol>
+
+					<Input
+						label="Display Order"
+						value={form.order ?? ""}
+						onChange={(v) => setForm({ ...form, order: v })}
+					/>
 
 					<label className="flex items-center gap-2">
 						<input
@@ -270,17 +251,17 @@ export default function EditProjectPage() {
 						/>
 						Featured Project
 					</label>
+
+					<p className="text-sm text-muted-foreground">
+						Views: {form.views}
+					</p>
 				</Section>
 
-				{/* ================= ACTION ================= */}
+				{/* ACTIONS */}
 				<div className="flex gap-4">
-					<button
-						disabled={saving || uploading !== null}
-						className="flex-1 bg-[#2B41B0] text-white py-3 rounded-xl font-semibold disabled:opacity-50"
-					>
-						{saving ? "Saving..." : "Save Changes"}
+					<button className="flex-1 bg-[#2B41B0] text-white py-3 rounded-xl font-semibold">
+						Save Changes
 					</button>
-
 					<button
 						type="button"
 						onClick={handleDelete}
@@ -388,7 +369,6 @@ function Select({ value, options, onChange }: SelectProps) {
 		</select>
 	);
 }
-
 function MediaBlock({ label, children }: MediaBlockProps) {
 	return (
 		<div className="border rounded-lg p-4 space-y-2">

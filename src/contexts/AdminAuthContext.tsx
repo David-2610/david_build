@@ -11,44 +11,30 @@ import { useRouter } from "next/navigation";
 type AdminAuthContextType = {
   token: string | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
-  setToken: (token: string | null) => void;
+  login: (token: string) => void;
   logout: () => void;
 };
 
-const AdminAuthContext = createContext<AdminAuthContextType | null>(
-  null
-);
+const AdminAuthContext = createContext<AdminAuthContextType | null>(null);
 
-export function AdminAuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [token, setTokenState] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const [token, setToken] = useState<string | null>(null);
 
-  // Load token once on mount
+  // 🔁 Restore token once on load
   useEffect(() => {
     const stored = localStorage.getItem("admin_token");
-    if (stored) {
-      setTokenState(stored);
-    }
-    setIsLoading(false);
+    if (stored) setToken(stored);
   }, []);
 
-  function setToken(token: string | null) {
-    if (token) {
-      localStorage.setItem("admin_token", token);
-      setTokenState(token);
-    } else {
-      localStorage.removeItem("admin_token");
-      setTokenState(null);
-    }
+  function login(newToken: string) {
+    localStorage.setItem("admin_token", newToken);
+    setToken(newToken);
+    router.push("/admin");
   }
 
   function logout() {
+    localStorage.removeItem("admin_token");
     setToken(null);
     router.push("/admin/login");
   }
@@ -58,8 +44,7 @@ export function AdminAuthProvider({
       value={{
         token,
         isAuthenticated: !!token,
-        isLoading,
-        setToken,
+        login,
         logout,
       }}
     >
@@ -71,9 +56,7 @@ export function AdminAuthProvider({
 export function useAdminAuth() {
   const ctx = useContext(AdminAuthContext);
   if (!ctx) {
-    throw new Error(
-      "useAdminAuth must be used inside AdminAuthProvider"
-    );
+    throw new Error("useAdminAuth must be used inside AdminAuthProvider");
   }
   return ctx;
 }

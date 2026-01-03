@@ -1,93 +1,92 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import AdminShell from "@/app/admin/AdminShell";
-import { useAdminAuth } from "@/contexts/AdminAuthContext";
+import { useAdminData } from "@/contexts/AdminDataContext";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Pencil, Trash } from "lucide-react";
 
-type Blog = {
-  id: number;
-  title: string;
-  status: string;
-  createdAt: string;
-};
-
-export default function AdminBlogsPage() {
-  const { token, isLoading: authLoading } = useAdminAuth();
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function AdminBlogs() {
   const router = useRouter();
-
-  useEffect(() => {
-    // Wait for auth to finish loading
-    if (authLoading) return;
-    
-    // If no token after loading, redirect to login
-    if (!token) {
-      router.push("/admin/login");
-      return;
-    }
-
-    fetch("/api/admin/blogs", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(async (res) => {
-        if (res.status === 401) {
-          router.push("/admin/login");
-          return [];
-        }
-
-        const data = await res.json();
-        return Array.isArray(data) ? data : [];
-      })
-      .then((data) => {
-        setBlogs(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setBlogs([]);
-        setLoading(false);
-      });
-  }, [token, authLoading, router]);
+  const { blogs } = useAdminData();
 
   return (
-    <AdminShell>
-      <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Blogs</h1>
-        <Link
-          href="/admin/blogs/new"
-          className="bg-[#2B41B0] text-white px-4 py-2 rounded"
-        >
-          + New Blog
-        </Link>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Blogs</h1>
+        <Button onClick={() => router.push("/admin/blogs/new")}>
+          <Plus className="mr-2 h-4 w-4" />
+          Add Blog
+        </Button>
       </div>
 
-      {loading ? (
-        <p className="text-gray-500">Loading blogs…</p>
-      ) : blogs.length === 0 ? (
-        <p className="text-gray-500">No blogs found.</p>
-      ) : (
-        <div className="grid gap-4">
-          {blogs.map((blog) => (
-            <Link
-              key={blog.id}
-              href={`/admin/blogs/${blog.id}`}
-              className="border rounded p-4 hover:bg-gray-50 transition"
-            >
-              <h3 className="font-semibold">{blog.title}</h3>
-              <p className="text-sm text-gray-500">
-                {blog.status} •{" "}
-                {new Date(blog.createdAt).toDateString()}
+      {/* Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {blogs?.map((blog: any) => (
+          <div
+            key={blog.id}
+            className="rounded-xl border bg-card overflow-hidden shadow-sm hover:shadow-md transition"
+          >
+            {/* Cover */}
+            {blog.coverImage && (
+              <img
+                src={blog.coverImage}
+                alt={blog.title}
+                className="h-48 w-full object-cover"
+              />
+            )}
+
+            {/* Content */}
+            <div className="p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-lg">{blog.title}</h2>
+                <Badge
+                  variant={
+                    blog.status === "PUBLISHED" ? "default" : "secondary"
+                  }
+                >
+                  {blog.status}
+                </Badge>
+              </div>
+
+              <p className="text-sm text-muted-foreground">
+                {blog.excerpt}
               </p>
-            </Link>
-          ))}
-        </div>
-      )}
+
+              {/* Metadata */}
+              <div className="flex flex-wrap gap-2 text-xs">
+                {blog.category && <Badge variant="outline">{blog.category}</Badge>}
+                {blog.featured && <Badge>Featured</Badge>}
+                <Badge variant="secondary">Views: {blog.views}</Badge>
+              </div>
+
+              {/* SEO */}
+              <div className="text-xs text-muted-foreground">
+                <p><b>Slug:</b> {blog.slug}</p>
+                <p><b>Meta Title:</b> {blog.metaTitle ?? "—"}</p>
+                <p><b>Meta Description:</b> {blog.metaDescription ?? "—"}</p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 pt-2">
+                <Button
+                  size="sm"
+                  onClick={() => router.push(`/admin/blogs/${blog.id}`)}
+                >
+                  <Pencil className="mr-1 h-4 w-4" />
+                  Edit
+                </Button>
+
+                <Button size="sm" variant="destructive">
+                  <Trash className="mr-1 h-4 w-4" />
+                  Delete
+                </Button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
-    </AdminShell>
   );
 }

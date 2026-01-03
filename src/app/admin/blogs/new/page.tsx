@@ -2,17 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { adminLogout } from "@/lib/adminAuth";
 import { uploadFile } from "@/lib/upload";
+import { adminFetch } from "@/lib/adminFetch";
 import RichTextEditor from "@/components/editor/RichTextEditor";
-import { useAdminAuth } from "@/contexts/AdminAuthContext";
+import { useAdminData } from "@/contexts/AdminDataContext";
 
 type BlogStatus = "DRAFT" | "PUBLISHED";
 type UploadType = "cover" | "gallery" | "og" | null;
 
 export default function NewBlogPage() {
   const router = useRouter();
-  const { token } = useAdminAuth();
+  const { refreshBlogs, refreshDashboard } = useAdminData();
 
   /* ================= CORE ================= */
   const [title, setTitle] = useState("");
@@ -48,43 +48,40 @@ export default function NewBlogPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!token) return;
-    
     setSaving(true);
 
-    const res = await fetch("/api/admin/blogs", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        title,
-        slug,
-        excerpt,
-        content,
+    try {
+      await adminFetch("/api/admin/blogs", {
+        method: "POST",
+        body: JSON.stringify({
+          title,
+          slug,
+          excerpt,
+          content,
 
-        coverImage,
-        images,
-        category: category || null,
-        tags: tags ? tags.split(",").map((t) => t.trim()) : [],
+          coverImage,
+          images,
+          category: category || null,
+          tags: tags ? tags.split(",").map((t) => t.trim()) : [],
 
-        // SEO
-        metaTitle: metaTitle || null,
-        metaDescription: metaDescription || null,
-        ogImage: ogImage || null,
+          // SEO
+          metaTitle: metaTitle || null,
+          metaDescription: metaDescription || null,
+          ogImage: ogImage || null,
 
-        status,
-        featured,
-      }),
-    });
+          status,
+          featured,
+        }),
+      });
 
-    if (res.status === 401) {
-      adminLogout();
-      return;
+      // ✅ Update cached data instantly
+      refreshBlogs();
+      refreshDashboard();
+
+      router.push("/admin/blogs");
+    } finally {
+      setSaving(false);
     }
-
-    router.push("/admin/blogs");
   }
 
   return (
@@ -137,7 +134,9 @@ export default function NewBlogPage() {
               }}
             />
             {uploading === "cover" && <UploadProgress />}
-            {coverImage && <Preview src={coverImage} onRemove={() => setCoverImage("")} />}
+            {coverImage && (
+              <Preview src={coverImage} onRemove={() => setCoverImage("")} />
+            )}
           </MediaBlock>
 
           <MediaBlock label="Gallery Images">
@@ -160,7 +159,11 @@ export default function NewBlogPage() {
             {uploading === "gallery" && <UploadProgress />}
             <div className="grid grid-cols-4 gap-4 mt-4">
               {images.map((img, i) => (
-                <Preview key={i} src={img} onRemove={() => removeGalleryImage(i)} />
+                <Preview
+                  key={i}
+                  src={img}
+                  onRemove={() => removeGalleryImage(i)}
+                />
               ))}
             </div>
           </MediaBlock>
@@ -217,7 +220,9 @@ export default function NewBlogPage() {
                 setUploading(null);
               }}
             />
-            {ogImage && <Preview src={ogImage} onRemove={() => setOgImage("")} />}
+            {ogImage && (
+              <Preview src={ogImage} onRemove={() => setOgImage("")} />
+            )}
           </MediaBlock>
         </Section>
 
