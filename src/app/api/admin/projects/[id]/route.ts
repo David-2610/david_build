@@ -1,87 +1,78 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
+export const runtime = "nodejs";
 
-// GET → fetch single project
+// GET → public single project
 export async function GET(
-  req: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  _req: NextRequest,
+  { params }: { params: { id: string } }
 ) {
-  try {
-    requireAdmin(req);
+  const project = await prisma.project.findUnique({
+    where: { id: Number(params.id) },
+    include: { milestones: true },
+  });
 
-    const { id } = await context.params;
-
-    const project = await prisma.project.findUnique({
-      where: { id: Number(id) },
-    });
-
-    if (!project) {
-      return NextResponse.json(
-        { message: "Project not found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(project);
-  } catch {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  if (!project) {
+    return NextResponse.json({ message: "Not found" }, { status: 404 });
   }
+
+  return NextResponse.json(project);
 }
 
-// PUT → update project
+// PUT → admin update
 export async function PUT(
   req: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  try {
-    requireAdmin(req);
+  await requireAdmin(req);
 
-    const { id } = await context.params;
-    const body = await req.json();
+  const body = await req.json();
 
-    const project = await prisma.project.update({
-      where: { id: Number(id) },
-      data: {
-        title: body.title,
-        slug: body.slug,
-        shortDescription: body.shortDescription,
-        description: body.description,
-        category: body.category,
-        techStack: body.techStack,
-        coverImage: body.coverImage,
-        featured: body.featured,
-      },
-    });
+  // replace milestones cleanly
+  await prisma.projectMilestone.deleteMany({
+    where: { projectId: Number(params.id) },
+  });
 
-    return NextResponse.json(project);
-  } catch {
-    return NextResponse.json(
-      { message: "Failed to update project" },
-      { status: 400 }
-    );
-  }
+  const project = await prisma.project.update({
+    where: { id: Number(params.id) },
+    data: {
+      ...(body.title && { title: body.title }),
+      ...(body.slug && { slug: body.slug }),
+      ...(body.shortDescription && { shortDescription: body.shortDescription }),
+      ...(body.description && { description: body.description }),
+      ...(body.category && { category: body.category }),
+      ...(body.status && { status: body.status }),
+      ...(body.techStack && { techStack: body.techStack }),
+      ...(body.coverImage && { coverImage: body.coverImage }),
+      ...(body.featured !== undefined && { featured: body.featured }),
+
+      milestones: body.milestones?.length
+        ? {
+            create: body.milestones.map((m: any) => ({
+              title: m.title,
+              summary: m.summary,
+              date: m.date ? new Date(m.date) : null,
+            })),
+          }
+        : undefined,
+    },
+    include: { milestones: true },
+  });
+
+  return NextResponse.json(project);
 }
 
-// DELETE → remove project
+// DELETE → admin only
 export async function DELETE(
   req: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  try {
-    requireAdmin(req);
+  await requireAdmin(req);
 
-    const { id } = await context.params;
+  await prisma.project.delete({
+    where: { id: Number(params.id) },
+  });
 
-    await prisma.project.delete({
-      where: { id: Number(id) },
-    });
-
-    return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json(
-      { message: "Failed to delete project" },
-      { status: 400 }
-    );
-  }
+  return NextResponse.json({ success: true });
 }

@@ -1,55 +1,52 @@
+export const runtime = "nodejs";
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
 
-// GET → list blogs
-export async function GET(req: Request) {
-	try {
-		requireAdmin(req);
-
-		const blogs = await prisma.blog.findMany({
-			orderBy: { createdAt: "desc" },
-		});
-
-		return NextResponse.json(blogs);
-	} catch {
-		return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-	}
-}
-
-// POST → create blog
+// POST /api/admin/blogs → create blog
 export async function POST(req: Request) {
-	try {
-		requireAdmin(req);
-		const body = await req.json();
+  await requireAdmin(req);
 
-		const blog = await prisma.blog.create({
-			data: {
-				title: body.title,
-				slug: body.slug,
-				excerpt: body.excerpt,
-				content: body.content,
+  try {
+    const body = await req.json();
 
-				coverImage: body.coverImage,
-				images: body.images ?? [],
-				category: body.category ?? null,
-				tags: body.tags ?? [],
+    const blog = await prisma.blog.create({
+      data: {
+        title: body.title,
+        slug: body.slug,
+        excerpt: body.excerpt,
+        content: body.content,
 
-				// SEO
-				metaTitle: body.metaTitle ?? null,
-				metaDescription: body.metaDescription ?? null,
-				ogImage: body.ogImage ?? null,
+        coverImage: body.coverImage ?? null,
+        images: body.images ?? null,
+        category: body.category ?? null,
+        tags: body.tags ?? null,
 
-				status: body.status ?? "DRAFT",
-				featured: body.featured ?? false,
-			},
-		});
+        // SEO
+        metaTitle: body.metaTitle ?? null,
+        metaDescription: body.metaDescription ?? null,
+        ogImage: body.ogImage ?? null,
 
-		return NextResponse.json(blog, { status: 201 });
-	} catch {
-		return NextResponse.json(
-			{ message: "Failed to create blog" },
-			{ status: 400 }
-		);
-	}
+        status: body.status ?? "DRAFT",
+        featured: body.featured ?? false,
+      },
+    });
+
+    return NextResponse.json(blog, { status: 201 });
+  } catch (error: any) {
+    console.error("CREATE BLOG ERROR:", error);
+
+    if (error.code === "P2002") {
+      return NextResponse.json(
+        { message: "Blog with this slug already exists" },
+        { status: 409 }
+      );
+    }
+
+    return NextResponse.json(
+      { message: "Failed to create blog" },
+      { status: 500 }
+    );
+  }
 }

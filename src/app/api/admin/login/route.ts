@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword } from "@/lib/password";
 import { signAdminToken } from "@/lib/jwt";
+export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   const { email, password } = await req.json();

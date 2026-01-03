@@ -1,28 +1,33 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// GET /api/blogs → fetch all blogs
+// GET /api/blogs → list published blogs (PUBLIC)
 export async function GET() {
-  const blogs = await prisma.blog.findMany({
-    orderBy: { createdAt: "desc" },
-  });
-
-  return NextResponse.json(blogs);
-}
-
-// POST /api/blogs → create new blog
-export async function POST(req: Request) {
   try {
-    const { title, slug, content } = await req.json();
-
-    const blog = await prisma.blog.create({
-      data: { title, slug, content },
+    const blogs = await prisma.blog.findMany({
+      where: {
+        status: "PUBLISHED",
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        excerpt: true,
+        coverImage: true,
+        category: true,
+        tags: true,
+        createdAt: true,
+      },
     });
 
-    return NextResponse.json(blog, { status: 201 });
+    return NextResponse.json(blogs, { status: 200 });
   } catch (error) {
+    console.error("GET BLOGS ERROR:", error);
     return NextResponse.json(
-      { message: "Failed to create blog" },
+      { message: "Failed to fetch blogs" },
       { status: 500 }
     );
   }

@@ -1,36 +1,27 @@
+export const runtime = "nodejs";
+
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/requireAdmin";
 
-export async function GET() {
-  try {
-    const cookieStore = await cookies(); // ✅ FIX
-    const session = cookieStore.get("admin_session");
+// GET /api/admin/sessions → list sessions
+export async function GET(req: Request) {
+  const admin = await requireAdmin(req);
 
-    if (!session) {
-      return NextResponse.json({ authenticated: false });
-    }
+  const sessions = await prisma.adminSession.findMany({
+    where: {
+      adminId: admin.adminId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      id: true,
+      createdAt: true,
+      expiresAt: true,
+      revoked: true,
+    },
+  });
 
-    const adminId = Number(session.value);
-
-    const admin = await prisma.admin.findUnique({
-      where: { id: adminId },
-      select: { id: true, email: true },
-    });
-
-    if (!admin) {
-      return NextResponse.json({ authenticated: false });
-    }
-
-    return NextResponse.json({
-      authenticated: true,
-      admin,
-    });
-  } catch (error) {
-    console.error("SESSION CHECK ERROR:", error);
-    return NextResponse.json(
-      { authenticated: false },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json(sessions);
 }

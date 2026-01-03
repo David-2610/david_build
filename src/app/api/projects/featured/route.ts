@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+export const runtime = "nodejs";
 
 // GET /api/projects/featured
 export async function GET() {
@@ -23,7 +24,7 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json(projects);
+    return NextResponse.json(projects, { status: 200 });
   } catch (error) {
     console.error("FEATURED PROJECTS ERROR:", error);
     return NextResponse.json(
