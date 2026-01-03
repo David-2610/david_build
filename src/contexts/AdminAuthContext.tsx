@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 type AdminAuthContextType = {
   token: string | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   setToken: (token: string | null) => void;
   logout: () => void;
 };
@@ -25,6 +26,7 @@ export function AdminAuthProvider({
   children: React.ReactNode;
 }) {
   const [token, setTokenState] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   // Load token once on mount
@@ -33,6 +35,7 @@ export function AdminAuthProvider({
     if (stored) {
       setTokenState(stored);
     }
+    setIsLoading(false);
   }, []);
 
   function setToken(token: string | null) {
@@ -55,6 +58,7 @@ export function AdminAuthProvider({
       value={{
         token,
         isAuthenticated: !!token,
+        isLoading,
         setToken,
         logout,
       }}

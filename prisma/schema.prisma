@@ -7,14 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/**
+ * ---------------- ADMIN ----------------
+ */
+
 model Admin {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+
+  sessions AdminSession[]
 }
 
-
+/**
+ * ---------------- BLOG ----------------
+ */
 
 enum BlogStatus {
   DRAFT
@@ -22,32 +30,34 @@ enum BlogStatus {
 }
 
 model Blog {
-  id              Int        @id @default(autoincrement())
-  title           String
-  slug            String     @unique
-  excerpt         String     @db.VarChar(300)
-  content         String     @db.LongText
+  id      Int    @id @default(autoincrement())
+  title   String
+  slug    String @unique
+  excerpt String @db.VarChar(300)
+  content String @db.LongText
 
-  coverImage      String?
-  images          Json?
-  category        String?
-  tags            Json?
+  coverImage String?
+  images     Json?
+  category   String?
+  tags       Json?
 
   // SEO
   metaTitle       String?
   metaDescription String?
   ogImage         String?
 
-  status          BlogStatus @default(DRAFT)
-  featured        Boolean    @default(false)
+  status   BlogStatus @default(DRAFT)
+  featured Boolean    @default(false)
 
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  views Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-
-
-/* ---------------- PROJECTS ---------------- */
+/**
+ * ---------------- PROJECTS ----------------
+ */
 
 enum ProjectCategory {
   WEB
@@ -62,43 +72,67 @@ enum ProjectStatus {
 }
 
 model Project {
-  id               Int               @id @default(autoincrement())
-  title            String
-  slug             String            @unique
+  id    Int    @id @default(autoincrement())
+  title String
+  slug  String @unique
 
-  shortDescription String            @db.VarChar(300)
-  description      String            @db.LongText
+  shortDescription String @db.VarChar(300)
+  description      String @db.LongText
 
-  category         ProjectCategory   @default(WEB)
-  status           ProjectStatus     @default(COMPLETED)
+  category ProjectCategory @default(WEB)
+  status   ProjectStatus   @default(COMPLETED)
 
-  techStack        Json               // ✅ FIXED
+  techStack Json
 
-  coverImage       String
-  images           Json?
-  videoUrl         String?
+  coverImage String
+  images     Json?
+  videoUrl   String?
 
-  link             String?
-  githubUrl        String?
+  link      String?
+  githubUrl String?
 
-  featured         Boolean           @default(false)
-  order            Int?
+  featured Boolean @default(false)
+  order    Int?
 
-  createdAt        DateTime          @default(now())
+  // 📅 Project Timeline
+  startDate DateTime?
+  endDate   DateTime?
 
-  milestones       ProjectMilestone[]
+  // 📊 Analytics
+  views Int @default(0)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+
+  milestones ProjectMilestone[]
 }
 
-
 model ProjectMilestone {
-  id        Int      @id @default(autoincrement())
+  id        Int @id @default(autoincrement())
   projectId Int
 
-  title     String
-  summary   String   @db.VarChar(500)
-  date      DateTime?
+  title   String
+  summary String    @db.VarChar(500)
+  date    DateTime?
 
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+}
+
+/**
+ * ---------------- ADMIN SESSION ----------------
+ */
+model AdminSession {
+  id        Int      @id @default(autoincrement())
+  adminId   Int
+  token     String   @unique
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+
+  admin Admin @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
 }

@@ -14,13 +14,20 @@ type Blog = {
 };
 
 export default function AdminBlogsPage() {
-  const { token } = useAdminAuth();
+  const { token, isLoading: authLoading } = useAdminAuth();
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    if (!token) return;
+    // Wait for auth to finish loading
+    if (authLoading) return;
+    
+    // If no token after loading, redirect to login
+    if (!token) {
+      router.push("/admin/login");
+      return;
+    }
 
     fetch("/api/admin/blogs", {
       headers: {
@@ -44,7 +51,7 @@ export default function AdminBlogsPage() {
         setBlogs([]);
         setLoading(false);
       });
-  }, [token, router]);
+  }, [token, authLoading, router]);
 
   return (
     <AdminShell>

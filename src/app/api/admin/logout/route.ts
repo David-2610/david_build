@@ -1,11 +1,45 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-// POST /api/admin/logout
-export async function adminLogout() {
-  await fetch("/api/admin/logout", {
-    method: "POST",
-    credentials: "include",
-  });
+export async function POST(req: Request) {
+  try {
+    const authHeader = req.headers.get("authorization");
 
-  window.location.href = "/admin/login";
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { error: "Authorization token missing" },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    // 1️⃣ Find session
+    const session = await prisma.adminSession.findUnique({
+      where: { token },
+    });
+
+    if (!session) {
+      return NextResponse.json(
+        { error: "Invalid session" },
+        { status: 401 }
+      );
+    }
+
+    // 2️⃣ Revoke token
+    await prisma.adminSession.update({
+      where: { id: session.id },
+      data: { revoked: true },
+    });
+
+    return NextResponse.json({
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    console.error("LOGOUT ERROR:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }
-
