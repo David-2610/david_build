@@ -2,23 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { Loader2, Lock } from "lucide-react";
-import { useAdminAuth } from "@/contexts/AdminAuthContext";
 
-export default function AdminLogin() {
+export default function AdminLoginPage() {
   const router = useRouter();
-  const { login } = useAdminAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  async function handleLogin(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError("");
     setLoading(true);
+    setError(null);
 
     try {
       const res = await fetch("/api/admin/login", {
@@ -27,102 +23,63 @@ export default function AdminLogin() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Invalid credentials");
-        setLoading(false);
+      if (res.status === 401) {
+        setError("Invalid email or password");
         return;
       }
 
-      // ✅ Correct: let context manage token storage
-      login(data.token);
+      if (!res.ok) {
+        setError("Something went wrong");
+        return;
+      }
 
-      // Small delay for smoother UX
-      setTimeout(() => {
-        router.push("/admin");
-      }, 600);
-    } catch {
-      setError("Something went wrong");
+      // ✅ Cookie is set by backend
+      // ✅ Redirect to dashboard
+      router.push("/admin");
+    } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#2B41B0]/10 via-white to-[#7E57C2]/10 px-4">
-      <motion.form
-        onSubmit={handleLogin}
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-sm rounded-2xl border bg-white p-6 shadow-xl"
-      >
-        {/* Header */}
-        <div className="mb-6 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#2B41B0]/10 text-[#2B41B0]">
-            <Lock className="h-6 w-6" />
-          </div>
-          <h1 className="text-xl font-bold text-[#2B41B0]">
-            Admin Login
-          </h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Sign in to manage your portfolio
-          </p>
-        </div>
+    <div className="w-full max-w-sm bg-white p-6 rounded-lg shadow">
+      <h1 className="text-2xl font-semibold mb-4 text-center">
+        Admin Login
+      </h1>
 
-        {/* Error */}
-        {error && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mb-4 rounded bg-red-50 p-3 text-sm text-red-600"
-          >
-            {error}
-          </motion.p>
-        )}
+      {error && (
+        <p className="mb-3 text-sm text-red-600 text-center">
+          {error}
+        </p>
+      )}
 
-        {/* Email */}
-        <div className="mb-3">
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full rounded-lg border px-3 py-2 outline-none focus:border-[#2B41B0]"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={loading}
-            required
-          />
-        </div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full border rounded px-3 py-2"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
 
-        {/* Password */}
-        <div className="mb-5">
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full rounded-lg border px-3 py-2 outline-none focus:border-[#2B41B0]"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            disabled={loading}
-            required
-          />
-        </div>
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full border rounded px-3 py-2"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
 
-        {/* Button */}
-        <motion.button
-          whileTap={{ scale: 0.97 }}
+        <button
+          type="submit"
           disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2B41B0] py-2.5 font-semibold text-white disabled:opacity-70"
+          className="w-full bg-black text-white py-2 rounded disabled:opacity-50"
         >
-          {loading ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Signing in…
-            </>
-          ) : (
-            "Login"
-          )}
-        </motion.button>
-      </motion.form>
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
     </div>
   );
 }

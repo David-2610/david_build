@@ -2,8 +2,6 @@ import "./globals.css"; // ✅ REQUIRED
 import Navbar from "@/components/Navbar";
 import type { Metadata } from "next";
 import { lufga, urbanist } from "../lib/fonts"; // ✅ ADD THIS
-import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
-import { AdminDataProvider } from "@/contexts/AdminDataContext";
 
 export const metadata: Metadata = {
 	title: {
@@ -26,9 +24,7 @@ export default function RootLayout({
 		<html lang="en" className={`${urbanist.variable} ${lufga.variable}`}>
 			<body className="flex flex-col font-urbanist antialiased">
 				<Navbar />
-				<AdminDataProvider>
-					<AdminAuthProvider>{children}</AdminAuthProvider>
-				</AdminDataProvider>
+				{children}
 			</body>
 		</html>
 	);

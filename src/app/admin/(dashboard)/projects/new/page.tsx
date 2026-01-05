@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { uploadFile } from "@/lib/upload";
 import { uploadVideo } from "@/lib/uploadVideo";
-import { adminFetch } from "@/lib/adminFetch";
-import { useAdminData } from "@/contexts/AdminDataContext";
 
 type Category = "WEB" | "AIML" | "GAME";
 type Status = "COMPLETED" | "IN_PROGRESS" | "EXPERIMENT";
@@ -19,7 +17,6 @@ type UploadType = "cover" | "gallery" | "video" | null;
 
 export default function NewProjectPage() {
 	const router = useRouter();
-	const { refreshProjects, refreshDashboard } = useAdminData();
 
 	// ===== CORE =====
 	const [title, setTitle] = useState("");
@@ -57,21 +54,15 @@ export default function NewProjectPage() {
 			.replace(/[^a-z0-9]+/g, "-");
 	}
 
-	function removeCoverImage() {
-		setCoverImage("");
-	}
-
-	function removeGalleryImage(index: number) {
-		setImages((prev) => prev.filter((_, i) => i !== index));
-	}
-
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
 		setLoading(true);
 
 		try {
-			await adminFetch("/api/admin/projects", {
+			const res = await fetch("/api/admin/projects", {
 				method: "POST",
+				credentials: "include",
+				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					title,
 					slug,
@@ -91,18 +82,25 @@ export default function NewProjectPage() {
 				}),
 			});
 
-			// ✅ Update cached data instantly
-			refreshProjects();
-			refreshDashboard();
+			if (!res.ok) {
+				throw new Error("Failed to create project");
+			}
 
 			router.push("/admin/projects");
 		} finally {
 			setLoading(false);
 		}
 	}
+	function removeCoverImage() {
+		setCoverImage("");
+	}
+
+	function removeGalleryImage(index: number) {
+		setImages((prev) => prev.filter((_, i) => i !== index));
+	}
 
 	return (
-		<div className="min-h-screen bg-gray-50 flex justify-center py-10 px-4">
+		<div className="flex justify-center py-10 px-4">
 			<form
 				onSubmit={handleSubmit}
 				className="w-full max-w-5xl space-y-8"
@@ -111,58 +109,48 @@ export default function NewProjectPage() {
 					Create New Project
 				</h1>
 
-				{/* ================= BASIC INFO ================= */}
+				{/* BASIC INFO */}
 				<section className="rounded-xl border bg-white p-6 space-y-4">
 					<h2 className="text-lg font-semibold">
 						📘 Basic Information
 					</h2>
 
 					<div className="grid grid-cols-2 gap-4">
-						<div>
-							<label className="label">Project Title</label>
-							<input
-								required
-								value={title}
-								onChange={(e) => {
-									setTitle(e.target.value);
-									setSlug(generateSlug(e.target.value));
-								}}
-								className="input"
-							/>
-						</div>
+						<input
+							required
+							placeholder="Project title"
+							value={title}
+							onChange={(e) => {
+								setTitle(e.target.value);
+								setSlug(generateSlug(e.target.value));
+							}}
+							className="input"
+						/>
 
-						<div>
-							<label className="label">Slug</label>
-							<input
-								required
-								value={slug}
-								onChange={(e) => setSlug(e.target.value)}
-								className="input"
-							/>
-						</div>
-					</div>
-
-					<div>
-						<label className="label">Short Description</label>
-						<textarea
-							maxLength={300}
-							value={shortDescription}
-							onChange={(e) =>
-								setShortDescription(e.target.value)
-							}
+						<input
+							required
+							placeholder="Slug"
+							value={slug}
+							onChange={(e) => setSlug(e.target.value)}
 							className="input"
 						/>
 					</div>
 
-					<div>
-						<label className="label">Full Description</label>
-						<textarea
-							rows={5}
-							value={description}
-							onChange={(e) => setDescription(e.target.value)}
-							className="input"
-						/>
-					</div>
+					<textarea
+						maxLength={300}
+						placeholder="Short description"
+						value={shortDescription}
+						onChange={(e) => setShortDescription(e.target.value)}
+						className="input"
+					/>
+
+					<textarea
+						rows={5}
+						placeholder="Full description"
+						value={description}
+						onChange={(e) => setDescription(e.target.value)}
+						className="input"
+					/>
 				</section>
 
 				{/* ================= MEDIA ================= */}
@@ -414,7 +402,6 @@ export default function NewProjectPage() {
 					</button>
 				</section>
 
-				{/* ================= ACTION ================= */}
 				<button
 					disabled={loading || uploading !== null}
 					className="w-full bg-[#2B41B0] text-white py-3 rounded-xl font-semibold disabled:opacity-50"
