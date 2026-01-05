@@ -1,8 +1,9 @@
 {
   "info": {
+    "_postman_id": "906e87a7-bd7d-45c2-a665-59ed01a6cfd8",
     "name": "DAVID_BUILD API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Collection generated from codebase scan of Next.js app routes under src/app/api. Includes public and admin endpoints."
+    "description": "Collection generated from codebase scan of Next.js app routes under src/app/api. Includes public and admin endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
@@ -13,89 +14,519 @@
           "item": [
             {
               "name": "GET /api/blogs",
+              "id": "a545e9d5-7af2-4ffa-b4c2-f09d6e6ee653",
               "request": {
                 "method": "GET",
+                "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/blogs",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "blogs"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "blogs"
+                  ]
                 }
-              }
+              },
+              "response": [
+                {
+                  "id": "e672e677-f44c-4139-8cb1-a24e0d949ebf",
+                  "name": "GET /api/blogs",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/api/blogs",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "blogs"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "vary",
+                      "value": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch"
+                    },
+                    {
+                      "key": "content-type",
+                      "value": "application/json"
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Mon, 05 Jan 2026 02:14:21 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    },
+                    {
+                      "key": "Transfer-Encoding",
+                      "value": "chunked"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": "2026-01-05T02:14:26.696Z",
+                  "body": "[\n    {\n        \"id\": 3,\n        \"title\": \"MY FIRST BLOGING\",\n        \"slug\": \"mefgvwerg\",\n        \"excerpt\": \"waesga dbsdr bghasder gsef vvsdfh dsfbgbsbg\",\n        \"coverImage\": \"https://res.cloudinary.com/durplj1mv/image/upload/v1767457470/blogs/vd3pal9zjhvru2e6wfuu.jpg\",\n        \"category\": \"ssss\",\n        \"tags\": [\n            \"aaaa\",\n            \"a\",\n            \"a\",\n            \"a\",\n            \"\",\n            \"a\",\n            \"\",\n            \"a\",\n            \"a\",\n            \"\"\n        ],\n        \"createdAt\": \"2026-01-03T16:25:42.371Z\"\n    },\n    {\n        \"id\": 2,\n        \"title\": \"My First Blog\",\n        \"slug\": \"my-first-blog\",\n        \"excerpt\": \"This is a short excerpt\",\n        \"coverImage\": null,\n        \"category\": \"WEB\",\n        \"tags\": [\n            \"nextjs\",\n            \"prisma\"\n        ],\n        \"createdAt\": \"2026-01-03T08:33:06.931Z\"\n    }\n]"
+                }
+              ]
             },
             {
               "name": "GET /api/blogs/[slug]",
+              "id": "121ccae0-b8bd-4517-a2e9-99c8ddfe6b46",
               "request": {
                 "method": "GET",
+                "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/blogs/{{slug}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "blogs", "{{slug}}"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "blogs",
+                    "{{slug}}"
+                  ]
                 }
-              }
+              },
+              "response": [
+                {
+                  "id": "60c940a5-0932-4b2a-8803-13fbf90fca99",
+                  "name": "GET /api/blogs/[slug]",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/api/blogs/{{slug}}",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "blogs",
+                        "{{slug}}"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "vary",
+                      "value": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch"
+                    },
+                    {
+                      "key": "content-type",
+                      "value": "application/json"
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Mon, 05 Jan 2026 02:16:13 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    },
+                    {
+                      "key": "Transfer-Encoding",
+                      "value": "chunked"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": "2026-01-05T02:16:15.449Z",
+                  "body": "{\n    \"id\": 3,\n    \"title\": \"MY FIRST BLOGING\",\n    \"slug\": \"mefgvwerg\",\n    \"excerpt\": \"waesga dbsdr bghasder gsef vvsdfh dsfbgbsbg\",\n    \"content\": \"<h2>scv bn,,mbnsbdvm,bdfkm,bnv vzjkgfvjkbxzmk,fb jkxzbfvjkzbnfk xjkfbv  </h2><p>  b</p><p>d Bdf BDb DB D BDB DZB DGB SDB DFB ADSRGH DGB DSG D H     <br>bhjkn</p><p></p>\",\n    \"coverImage\": \"https://res.cloudinary.com/durplj1mv/image/upload/v1767457470/blogs/vd3pal9zjhvru2e6wfuu.jpg\",\n    \"images\": [\n        \"https://res.cloudinary.com/durplj1mv/image/upload/v1767457481/blogs/fmlkob5c0njna370doyi.jpg\",\n        \"https://res.cloudinary.com/durplj1mv/image/upload/v1767457497/blogs/x4zwylwuxb9ujt653jyc.jpg\",\n        \"https://res.cloudinary.com/durplj1mv/image/upload/v1767457516/blogs/eplvanmd3tqrs2hdewgg.jpg\"\n    ],\n    \"category\": \"ssss\",\n    \"tags\": [\n        \"aaaa\",\n        \"a\",\n        \"a\",\n        \"a\",\n        \"\",\n        \"a\",\n        \"\",\n        \"a\",\n        \"a\",\n        \"\"\n    ],\n    \"metaTitle\": \"all in one\",\n    \"metaDescription\": \"adc awefg dthbns rghthdth \",\n    \"ogImage\": \"https://res.cloudinary.com/durplj1mv/image/upload/v1767457536/blogs/rawwviq7e55o3q67mim5.jpg\",\n    \"status\": \"PUBLISHED\",\n    \"featured\": true,\n    \"views\": 0,\n    \"createdAt\": \"2026-01-03T16:25:42.371Z\",\n    \"updatedAt\": \"2026-01-03T16:25:42.371Z\"\n}"
+                }
+              ]
             },
             {
               "name": "GET /api/blogs/id/[id]",
+              "id": "fa1a6e52-9a8e-4419-99fd-cbcbeacde7d7",
               "request": {
                 "method": "GET",
+                "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/blogs/id/{{id}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "blogs", "id", "{{id}}"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "blogs",
+                    "id",
+                    "{{id}}"
+                  ]
                 }
-              }
+              },
+              "response": [
+                {
+                  "id": "65595675-60c6-4760-9c07-55f60fade8c7",
+                  "name": "GET /api/blogs/id/[id]",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/api/blogs/id/{{id}}",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "blogs",
+                        "id",
+                        "{{id}}"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "vary",
+                      "value": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch"
+                    },
+                    {
+                      "key": "content-type",
+                      "value": "application/json"
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Mon, 05 Jan 2026 02:16:34 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    },
+                    {
+                      "key": "Transfer-Encoding",
+                      "value": "chunked"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": "2026-01-05T02:16:41.911Z",
+                  "body": "{\n    \"id\": 3,\n    \"title\": \"MY FIRST BLOGING\",\n    \"slug\": \"mefgvwerg\",\n    \"excerpt\": \"waesga dbsdr bghasder gsef vvsdfh dsfbgbsbg\",\n    \"content\": \"<h2>scv bn,,mbnsbdvm,bdfkm,bnv vzjkgfvjkbxzmk,fb jkxzbfvjkzbnfk xjkfbv  </h2><p>  b</p><p>d Bdf BDb DB D BDB DZB DGB SDB DFB ADSRGH DGB DSG D H     <br>bhjkn</p><p></p>\",\n    \"coverImage\": \"https://res.cloudinary.com/durplj1mv/image/upload/v1767457470/blogs/vd3pal9zjhvru2e6wfuu.jpg\",\n    \"images\": [\n        \"https://res.cloudinary.com/durplj1mv/image/upload/v1767457481/blogs/fmlkob5c0njna370doyi.jpg\",\n        \"https://res.cloudinary.com/durplj1mv/image/upload/v1767457497/blogs/x4zwylwuxb9ujt653jyc.jpg\",\n        \"https://res.cloudinary.com/durplj1mv/image/upload/v1767457516/blogs/eplvanmd3tqrs2hdewgg.jpg\"\n    ],\n    \"category\": \"ssss\",\n    \"tags\": [\n        \"aaaa\",\n        \"a\",\n        \"a\",\n        \"a\",\n        \"\",\n        \"a\",\n        \"\",\n        \"a\",\n        \"a\",\n        \"\"\n    ],\n    \"metaTitle\": \"all in one\",\n    \"metaDescription\": \"adc awefg dthbns rghthdth \",\n    \"ogImage\": \"https://res.cloudinary.com/durplj1mv/image/upload/v1767457536/blogs/rawwviq7e55o3q67mim5.jpg\",\n    \"status\": \"PUBLISHED\",\n    \"featured\": true,\n    \"views\": 1,\n    \"createdAt\": \"2026-01-03T16:25:42.371Z\",\n    \"updatedAt\": \"2026-01-05T02:16:13.819Z\"\n}"
+                }
+              ]
             }
-          ]
+          ],
+          "id": "ef4d9482-6576-4389-97e7-0354b692f244"
         },
         {
           "name": "Projects",
           "item": [
             {
               "name": "GET /api/projects",
+              "id": "5aae61bd-d8e8-41a7-a9d6-d136cfbfd0c9",
               "request": {
                 "method": "GET",
+                "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/projects",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "projects"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "projects"
+                  ]
                 }
-              }
+              },
+              "response": [
+                {
+                  "id": "2e222e2c-4b9a-44fe-864c-131e77aeaf55",
+                  "name": "GET /api/projects",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/api/projects",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "projects"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "vary",
+                      "value": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch"
+                    },
+                    {
+                      "key": "content-type",
+                      "value": "application/json"
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Mon, 05 Jan 2026 02:16:56 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    },
+                    {
+                      "key": "Transfer-Encoding",
+                      "value": "chunked"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": "2026-01-05T02:16:57.646Z",
+                  "body": "[\n    {\n        \"id\": 2,\n        \"title\": \"agrihealth \",\n        \"slug\": \"agrihealth\",\n        \"shortDescription\": \"asdfvsdgv\",\n        \"description\": \"rbghgderstnedr yjn ertjertyj etyjetyj et\",\n        \"category\": \"WEB\",\n        \"status\": \"COMPLETED\",\n        \"techStack\": [\n            \"desk\",\n            \"text\",\n            \"\"\n        ],\n        \"coverImage\": \"https://res.cloudinary.com/durplj1mv/image/upload/v1767434565/projects/gcz0enjnjpl0thltqa22.jpg\",\n        \"images\": [\n            \"https://res.cloudinary.com/durplj1mv/image/upload/v1767434572/projects/y5e02rrtzg810l41qj9o.jpg\"\n        ],\n        \"videoUrl\": \"https://res.cloudinary.com/durplj1mv/video/upload/v1767434580/projects/ycxsp0m0bpeameke6yug.mp4\",\n        \"link\": \"qwefarwgwg\",\n        \"githubUrl\": \" erhywerth\",\n        \"featured\": true,\n        \"order\": null,\n        \"startDate\": null,\n        \"endDate\": null,\n        \"views\": 0,\n        \"createdAt\": \"2026-01-03T10:03:23.683Z\",\n        \"updatedAt\": null,\n        \"milestones\": []\n    },\n    {\n        \"id\": 1,\n        \"title\": \"Portfolio Website\",\n        \"slug\": \"portfolio-website\",\n        \"shortDescription\": \"My personal portfolio\",\n        \"description\": \"Full portfolio project description\",\n        \"category\": \"WEB\",\n        \"status\": \"COMPLETED\",\n        \"techStack\": [\n            \"Next.js\",\n            \"Prisma\",\n            \"Tailwind\"\n        ],\n        \"coverImage\": \"/portfolio.png\",\n        \"images\": null,\n        \"videoUrl\": null,\n        \"link\": null,\n        \"githubUrl\": null,\n        \"featured\": true,\n        \"order\": 1,\n        \"startDate\": null,\n        \"endDate\": null,\n        \"views\": 0,\n        \"createdAt\": \"2026-01-03T08:17:06.057Z\",\n        \"updatedAt\": null,\n        \"milestones\": [\n            {\n                \"id\": 1,\n                \"projectId\": 1,\n                \"title\": \"Design\",\n                \"summary\": \"UI/UX completed\",\n                \"date\": null,\n                \"createdAt\": \"2026-01-03T08:17:06.057Z\"\n            },\n            {\n                \"id\": 2,\n                \"projectId\": 1,\n                \"title\": \"Development\",\n                \"summary\": \"Backend + frontend done\",\n                \"date\": null,\n                \"createdAt\": \"2026-01-03T08:17:06.057Z\"\n            }\n        ]\n    }\n]"
+                }
+              ]
             },
             {
               "name": "GET /api/projects/featured",
+              "id": "635869e6-d3c6-42f9-8e41-8b5fbf001fe6",
               "request": {
                 "method": "GET",
+                "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/projects/featured",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "projects", "featured"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "projects",
+                    "featured"
+                  ]
                 }
-              }
+              },
+              "response": [
+                {
+                  "id": "7da8015b-2624-447c-9d63-807725d4aaa7",
+                  "name": "GET /api/projects/featured",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/api/projects/featured",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "projects",
+                        "featured"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "vary",
+                      "value": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch"
+                    },
+                    {
+                      "key": "content-type",
+                      "value": "application/json"
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Mon, 05 Jan 2026 02:17:01 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    },
+                    {
+                      "key": "Transfer-Encoding",
+                      "value": "chunked"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": "2026-01-05T02:17:03.439Z",
+                  "body": "[\n    {\n        \"id\": 2,\n        \"title\": \"agrihealth \",\n        \"slug\": \"agrihealth\",\n        \"shortDescription\": \"asdfvsdgv\",\n        \"category\": \"WEB\",\n        \"techStack\": [\n            \"desk\",\n            \"text\",\n            \"\"\n        ],\n        \"coverImage\": \"https://res.cloudinary.com/durplj1mv/image/upload/v1767434565/projects/gcz0enjnjpl0thltqa22.jpg\"\n    },\n    {\n        \"id\": 1,\n        \"title\": \"Portfolio Website\",\n        \"slug\": \"portfolio-website\",\n        \"shortDescription\": \"My personal portfolio\",\n        \"category\": \"WEB\",\n        \"techStack\": [\n            \"Next.js\",\n            \"Prisma\",\n            \"Tailwind\"\n        ],\n        \"coverImage\": \"/portfolio.png\"\n    }\n]"
+                }
+              ]
             },
             {
               "name": "GET /api/projects/[slug]",
+              "id": "a2616e55-c41d-4bcc-98eb-8bccf3ffa945",
               "request": {
                 "method": "GET",
+                "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/projects/{{slug}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "projects", "{{slug}}"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "projects",
+                    "{{slug}}"
+                  ]
                 }
-              }
+              },
+              "response": [
+                {
+                  "id": "a176bf01-2ced-42b7-9445-f5e2318cbb0e",
+                  "name": "GET /api/projects/[slug]",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/api/projects/{{slug}}",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "projects",
+                        "{{slug}}"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "vary",
+                      "value": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch"
+                    },
+                    {
+                      "key": "content-type",
+                      "value": "application/json"
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Mon, 05 Jan 2026 02:17:32 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    },
+                    {
+                      "key": "Transfer-Encoding",
+                      "value": "chunked"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": "2026-01-05T02:17:39.589Z",
+                  "body": "{\n    \"id\": 2,\n    \"title\": \"agrihealth \",\n    \"slug\": \"agrihealth\",\n    \"shortDescription\": \"asdfvsdgv\",\n    \"description\": \"rbghgderstnedr yjn ertjertyj etyjetyj et\",\n    \"category\": \"WEB\",\n    \"status\": \"COMPLETED\",\n    \"techStack\": [\n        \"desk\",\n        \"text\",\n        \"\"\n    ],\n    \"coverImage\": \"https://res.cloudinary.com/durplj1mv/image/upload/v1767434565/projects/gcz0enjnjpl0thltqa22.jpg\",\n    \"images\": [\n        \"https://res.cloudinary.com/durplj1mv/image/upload/v1767434572/projects/y5e02rrtzg810l41qj9o.jpg\"\n    ],\n    \"videoUrl\": \"https://res.cloudinary.com/durplj1mv/video/upload/v1767434580/projects/ycxsp0m0bpeameke6yug.mp4\",\n    \"link\": \"qwefarwgwg\",\n    \"githubUrl\": \" erhywerth\",\n    \"featured\": true,\n    \"order\": null,\n    \"startDate\": null,\n    \"endDate\": null,\n    \"views\": 0,\n    \"createdAt\": \"2026-01-03T10:03:23.683Z\",\n    \"updatedAt\": null,\n    \"milestones\": []\n}"
+                }
+              ]
             },
             {
               "name": "GET /api/projects/id/[id]",
+              "id": "acd6c872-fdca-42e3-9260-5f1dfc4dc1c3",
               "request": {
                 "method": "GET",
+                "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/projects/id/{{id}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "projects", "id", "{{id}}"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "projects",
+                    "id",
+                    "{{id}}"
+                  ]
                 }
-              }
+              },
+              "response": [
+                {
+                  "id": "7d8d44ee-fa4d-4c25-838d-6b289e112e5e",
+                  "name": "GET /api/projects/id/[id]",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/api/projects/id/{{id}}",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "projects",
+                        "id",
+                        "{{id}}"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "vary",
+                      "value": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch"
+                    },
+                    {
+                      "key": "content-type",
+                      "value": "application/json"
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Mon, 05 Jan 2026 02:17:48 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    },
+                    {
+                      "key": "Transfer-Encoding",
+                      "value": "chunked"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": "2026-01-05T02:17:52.424Z",
+                  "body": "{\n    \"id\": 2,\n    \"title\": \"agrihealth \",\n    \"slug\": \"agrihealth\",\n    \"shortDescription\": \"asdfvsdgv\",\n    \"description\": \"rbghgderstnedr yjn ertjertyj etyjetyj et\",\n    \"category\": \"WEB\",\n    \"status\": \"COMPLETED\",\n    \"techStack\": [\n        \"desk\",\n        \"text\",\n        \"\"\n    ],\n    \"coverImage\": \"https://res.cloudinary.com/durplj1mv/image/upload/v1767434565/projects/gcz0enjnjpl0thltqa22.jpg\",\n    \"images\": [\n        \"https://res.cloudinary.com/durplj1mv/image/upload/v1767434572/projects/y5e02rrtzg810l41qj9o.jpg\"\n    ],\n    \"videoUrl\": \"https://res.cloudinary.com/durplj1mv/video/upload/v1767434580/projects/ycxsp0m0bpeameke6yug.mp4\",\n    \"link\": \"qwefarwgwg\",\n    \"githubUrl\": \" erhywerth\",\n    \"featured\": true,\n    \"order\": null,\n    \"startDate\": null,\n    \"endDate\": null,\n    \"views\": 0,\n    \"createdAt\": \"2026-01-03T10:03:23.683Z\",\n    \"updatedAt\": null,\n    \"milestones\": []\n}"
+                }
+              ]
             }
-          ]
+          ],
+          "id": "a3544c73-34ea-42b6-bc92-2ae63c2d4814"
         }
-      ]
+      ],
+      "id": "3110447b-8137-4501-97b4-104bf8ef72da"
     },
     {
       "name": "Admin",
@@ -105,10 +536,14 @@
           "item": [
             {
               "name": "POST /api/admin/login",
+              "id": "867f2253-61d3-4d06-a412-8078a93588e0",
               "request": {
                 "method": "POST",
                 "header": [
-                  {"key": "Content-Type", "value": "application/json"}
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -116,70 +551,119 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/admin/login",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "admin", "login"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "login"
+                  ]
                 }
-              }
+              },
+              "response": []
             },
             {
               "name": "POST /api/admin/logout",
+              "id": "a6e04027-6e4d-4742-90f3-9f27e0a2a09a",
               "request": {
                 "method": "POST",
                 "header": [
-                  {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
                 ],
                 "url": {
                   "raw": "{{base_url}}/api/admin/logout",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "admin", "logout"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "logout"
+                  ]
                 }
-              }
+              },
+              "response": []
             },
             {
               "name": "GET /api/admin/session",
+              "id": "6138f3cd-14bb-4237-9d50-38fe7db2c96a",
               "request": {
                 "method": "GET",
                 "header": [
-                  {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
                 ],
                 "url": {
                   "raw": "{{base_url}}/api/admin/session",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "admin", "session"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "session"
+                  ]
                 }
-              }
+              },
+              "response": []
             }
-          ]
+          ],
+          "id": "6adb0630-62b9-4117-acc5-95a6fb2a16b7"
         },
         {
           "name": "Dashboard",
           "item": [
             {
               "name": "GET /api/admin/dashboard",
+              "id": "b7cdd613-4aa9-48f0-8d3b-91650ccdfe08",
               "request": {
                 "method": "GET",
                 "header": [
-                  {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
                 ],
                 "url": {
                   "raw": "{{base_url}}/api/admin/dashboard",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "admin", "dashboard"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "dashboard"
+                  ]
                 }
-              }
+              },
+              "response": []
             }
-          ]
+          ],
+          "id": "aa4ee7d3-3d67-403d-bb02-d01574556c02"
         },
         {
           "name": "Blogs",
           "item": [
             {
               "name": "POST /api/admin/blogs",
+              "id": "5d7d5807-9c2c-4b40-9bcb-365ae2b82fa0",
               "request": {
                 "method": "POST",
                 "header": [
-                  {"key": "Authorization", "value": "Bearer {{admin_token}}"},
-                  {"key": "Content-Type", "value": "application/json"}
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -187,18 +671,32 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/admin/blogs",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "admin", "blogs"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "blogs"
+                  ]
                 }
-              }
+              },
+              "response": []
             },
             {
               "name": "PUT /api/admin/blogs/[id]",
+              "id": "1d80b790-e247-420e-a3ad-d7f3ca9afb37",
               "request": {
                 "method": "PUT",
                 "header": [
-                  {"key": "Authorization", "value": "Bearer {{admin_token}}"},
-                  {"key": "Content-Type", "value": "application/json"}
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -206,48 +704,85 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/admin/blogs/{{id}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "admin", "blogs", "{{id}}"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "blogs",
+                    "{{id}}"
+                  ]
                 }
-              }
+              },
+              "response": []
             },
             {
               "name": "DELETE /api/admin/blogs/[id]",
+              "id": "acaed5d8-1e1c-4122-95d5-44d7f91c8b33",
               "request": {
                 "method": "DELETE",
                 "header": [
-                  {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
                 ],
                 "url": {
                   "raw": "{{base_url}}/api/admin/blogs/{{id}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "admin", "blogs", "{{id}}"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "blogs",
+                    "{{id}}"
+                  ]
                 }
-              }
+              },
+              "response": []
             }
-          ]
+          ],
+          "id": "f67d6122-d3b8-4ffc-80ed-cc97f29049f2"
         },
         {
           "name": "Projects",
           "item": [
             {
               "name": "GET /api/admin/projects",
+              "id": "4a0dd5f9-6e3a-4c57-a413-ff1f64b5937c",
               "request": {
                 "method": "GET",
+                "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/admin/projects",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "admin", "projects"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "projects"
+                  ]
                 }
-              }
+              },
+              "response": []
             },
             {
               "name": "POST /api/admin/projects",
+              "id": "f3e353d0-6189-4e78-b1a1-d277652594e0",
               "request": {
                 "method": "POST",
                 "header": [
-                  {"key": "Authorization", "value": "Bearer {{admin_token}}"},
-                  {"key": "Content-Type", "value": "application/json"}
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -255,29 +790,53 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/admin/projects",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "admin", "projects"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "projects"
+                  ]
                 }
-              }
+              },
+              "response": []
             },
             {
               "name": "GET /api/admin/projects/[id]",
+              "id": "cad17293-27ce-47f5-a9b1-25708b913cd6",
               "request": {
                 "method": "GET",
+                "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/admin/projects/{{id}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "admin", "projects", "{{id}}"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "projects",
+                    "{{id}}"
+                  ]
                 }
-              }
+              },
+              "response": []
             },
             {
               "name": "PUT /api/admin/projects/[id]",
+              "id": "cc5d807f-35c9-46fa-978c-c2aed6b4d3c3",
               "request": {
                 "method": "PUT",
                 "header": [
-                  {"key": "Authorization", "value": "Bearer {{admin_token}}"},
-                  {"key": "Content-Type", "value": "application/json"}
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -285,34 +844,72 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/admin/projects/{{id}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "admin", "projects", "{{id}}"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "projects",
+                    "{{id}}"
+                  ]
                 }
-              }
+              },
+              "response": []
             },
             {
               "name": "DELETE /api/admin/projects/[id]",
+              "id": "b489595d-ebb1-4424-92fb-9214621a0e60",
               "request": {
                 "method": "DELETE",
                 "header": [
-                  {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
                 ],
                 "url": {
                   "raw": "{{base_url}}/api/admin/projects/{{id}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "admin", "projects", "{{id}}"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "projects",
+                    "{{id}}"
+                  ]
                 }
-              }
+              },
+              "response": []
             }
-          ]
+          ],
+          "id": "a204f81b-38e9-4487-8abd-7262bdd534f7"
         }
-      ]
+      ],
+      "id": "aa26bcef-4519-4bfa-ae92-8afaccf47a3c"
     }
   ],
   "variable": [
-    {"key": "base_url", "value": "http://localhost:3000"},
-    {"key": "admin_token", "value": ""},
-    {"key": "slug", "value": "sample-slug"},
-    {"key": "id", "value": "1"}
+    {
+      "id": "7c1d8fbe-e6ea-4b39-8183-5e3e40d62a9e",
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "id": "3931c4f5-9925-4e07-97cd-6a4afd582576",
+      "key": "admin_token",
+      "value": ""
+    },
+    {
+      "id": "35a7be24-b62c-4d6e-9002-4b9b92ad2e5b",
+      "key": "slug",
+      "value": "sample-slug"
+    },
+    {
+      "id": "5dd6f5b1-9eb0-4c09-80b6-2153f5be4000",
+      "key": "id",
+      "value": "1"
+    }
   ]
 }
