@@ -1,39 +1,58 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import ProjectsHeader from "@/components/Projects/ProjectsHeader";
+import FeaturedProjects from "@/components/Projects/FeaturedProjects";
+import ProjectsFilter from "@/components/Projects/ProjectsFilter";
+import ProjectsGrid from "@/components/Projects/ProjectsGrid";
+
+export type Project = {
+  id: number;
+  title: string;
+  slug: string;
+  shortDescription: string;
+  category: "WEB" | "AIML" | "GAME";
+  techStack: string[];
+  coverImage: string;
+  featured: boolean;
+  createdAt: string;
+};
+
 export default function ProjectsPage() {
-    return (
-      <main className="max-w-7xl mx-auto px-6 py-20">
-        <h1 className="text-4xl font-bold mb-12">Projects</h1>
-  
-        <div className="flex flex-col gap-8">
-          
-          {/* Project */}
-          <div className="border rounded-xl p-6 hover:shadow-md transition">
-            <h2 className="text-2xl font-semibold">
-              Personal Portfolio Platform
-            </h2>
-            <p className="mt-2 text-gray-600">
-              A modern personal website built to showcase projects, blogs, and
-              experiments with a strong focus on design and performance.
-            </p>
-            <p className="mt-4 text-sm text-gray-500">
-              Tech Stack: Next.js, Tailwind, Prisma
-            </p>
-          </div>
-  
-          <div className="border rounded-xl p-6 hover:shadow-md transition">
-            <h2 className="text-2xl font-semibold">
-              Recipe Management Application
-            </h2>
-            <p className="mt-2 text-gray-600">
-              Full-stack recipe platform featuring authentication, tagging,
-              filtering, and user interaction.
-            </p>
-            <p className="mt-4 text-sm text-gray-500">
-              Tech Stack: React, Node.js, REST APIs
-            </p>
-          </div>
-  
-        </div>
-      </main>
-    );
-  }
-  
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category");
+
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/projects", { cache: "no-store" })
+      .then((res) => res.json())
+      .then(setProjects)
+      .finally(() => setLoading(false));
+  }, []);
+
+  const featured = projects.filter((p) => p.featured).slice(0, 2);
+
+  const filteredProjects = useMemo(() => {
+    if (!category || category === "ALL") return projects;
+    return projects.filter((p) => p.category === category);
+  }, [projects, category]);
+
+  return (
+    <div className="space-y-16">
+      <ProjectsHeader />
+
+      <FeaturedProjects projects={featured} />
+
+      <ProjectsFilter active={category ?? "ALL"} />
+
+      <ProjectsGrid
+        projects={filteredProjects}
+        loading={loading}
+        hasFilter={!!category && category !== "ALL"}
+      />
+    </div>
+  );
+}
