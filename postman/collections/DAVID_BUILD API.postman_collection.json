@@ -1,0 +1,318 @@
+{
+  "info": {
+    "name": "DAVID_BUILD API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection generated from codebase scan of Next.js app routes under src/app/api. Includes public and admin endpoints."
+  },
+  "item": [
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "Blogs",
+          "item": [
+            {
+              "name": "GET /api/blogs",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/blogs",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "blogs"]
+                }
+              }
+            },
+            {
+              "name": "GET /api/blogs/[slug]",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/blogs/{{slug}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "blogs", "{{slug}}"]
+                }
+              }
+            },
+            {
+              "name": "GET /api/blogs/id/[id]",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/blogs/id/{{id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "blogs", "id", "{{id}}"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Projects",
+          "item": [
+            {
+              "name": "GET /api/projects",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/projects",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "projects"]
+                }
+              }
+            },
+            {
+              "name": "GET /api/projects/featured",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/projects/featured",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "projects", "featured"]
+                }
+              }
+            },
+            {
+              "name": "GET /api/projects/[slug]",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/projects/{{slug}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "projects", "{{slug}}"]
+                }
+              }
+            },
+            {
+              "name": "GET /api/projects/id/[id]",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/projects/id/{{id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "projects", "id", "{{id}}"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Auth",
+          "item": [
+            {
+              "name": "POST /api/admin/login",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {"key": "Content-Type", "value": "application/json"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"your-password\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/login",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "login"]
+                }
+              }
+            },
+            {
+              "name": "POST /api/admin/logout",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/logout",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "logout"]
+                }
+              }
+            },
+            {
+              "name": "GET /api/admin/session",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/session",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "session"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "GET /api/admin/dashboard",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/dashboard",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "dashboard"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Blogs",
+          "item": [
+            {
+              "name": "POST /api/admin/blogs",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {"key": "Authorization", "value": "Bearer {{admin_token}}"},
+                  {"key": "Content-Type", "value": "application/json"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Post title\",\n  \"slug\": \"post-slug\",\n  \"excerpt\": \"Short excerpt\",\n  \"content\": \"Markdown content...\",\n  \"status\": \"DRAFT\",\n  \"featured\": false\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/blogs",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "blogs"]
+                }
+              }
+            },
+            {
+              "name": "PUT /api/admin/blogs/[id]",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {"key": "Authorization", "value": "Bearer {{admin_token}}"},
+                  {"key": "Content-Type", "value": "application/json"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Updated title\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/blogs/{{id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "blogs", "{{id}}"]
+                }
+              }
+            },
+            {
+              "name": "DELETE /api/admin/blogs/[id]",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/blogs/{{id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "blogs", "{{id}}"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Projects",
+          "item": [
+            {
+              "name": "GET /api/admin/projects",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/admin/projects",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "projects"]
+                }
+              }
+            },
+            {
+              "name": "POST /api/admin/projects",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {"key": "Authorization", "value": "Bearer {{admin_token}}"},
+                  {"key": "Content-Type", "value": "application/json"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"My Project\",\n  \"slug\": \"my-project\",\n  \"shortDescription\": \"Short desc\",\n  \"description\": \"Long desc\",\n  \"techStack\": [\"Next.js\", \"Prisma\"],\n  \"featured\": false\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/projects",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "projects"]
+                }
+              }
+            },
+            {
+              "name": "GET /api/admin/projects/[id]",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/admin/projects/{{id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "projects", "{{id}}"]
+                }
+              }
+            },
+            {
+              "name": "PUT /api/admin/projects/[id]",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {"key": "Authorization", "value": "Bearer {{admin_token}}"},
+                  {"key": "Content-Type", "value": "application/json"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Updated Project\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/projects/{{id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "projects", "{{id}}"]
+                }
+              }
+            },
+            {
+              "name": "DELETE /api/admin/projects/[id]",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {"key": "Authorization", "value": "Bearer {{admin_token}}"}
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/projects/{{id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "projects", "{{id}}"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {"key": "base_url", "value": "http://localhost:3000"},
+    {"key": "admin_token", "value": ""},
+    {"key": "slug", "value": "sample-slug"},
+    {"key": "id", "value": "1"}
+  ]
+}
