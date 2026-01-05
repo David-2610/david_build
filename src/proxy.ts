@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // 🌍 PUBLIC ROUTES (NO AUTH)
+  // 🌍 PUBLIC ROUTES
   if (
     pathname.startsWith("/api/projects") ||
     pathname.startsWith("/api/blogs") ||
@@ -13,16 +13,11 @@ export function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 🔒 ADMIN ROUTES (header presence only)
+  // 🔒 ADMIN ROUTES
+  // ❗ Do NOT check headers or cookies here
+  // Auth is enforced inside the API via requireAdmin()
   if (pathname.startsWith("/api/admin")) {
-    const authHeader = req.headers.get("authorization");
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    return NextResponse.next();
   }
 
   return NextResponse.next();

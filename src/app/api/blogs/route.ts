@@ -5,9 +5,6 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   try {
     const blogs = await prisma.blog.findMany({
-      where: {
-        status: "PUBLISHED",
-      },
       orderBy: {
         createdAt: "desc",
       },

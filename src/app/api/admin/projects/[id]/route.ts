@@ -1,15 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
+
 export const runtime = "nodejs";
 
 // GET → public single project
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params; // ✅ REQUIRED
+  const projectId = Number(id);
+
+  if (Number.isNaN(projectId)) {
+    return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+  }
+
   const project = await prisma.project.findUnique({
-    where: { id: Number(params.id) },
+    where: { id: projectId },
     include: { milestones: true },
   });
 
@@ -21,25 +29,52 @@ export async function GET(
 }
 
 // PUT → admin update
+// PUT → admin update
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  await requireAdmin(req);
+  const admin = await requireAdmin();
+  if (!admin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id } = await params;
+  const projectId = Number(id);
+
+  if (Number.isNaN(projectId)) {
+    return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+  }
+
+  // ✅ 1️⃣ Check existence FIRST
+  const existing = await prisma.project.findUnique({
+    where: { id: projectId },
+    select: { id: true },
+  });
+
+  if (!existing) {
+    return NextResponse.json(
+      { message: "Project not found" },
+      { status: 404 }
+    );
+  }
 
   const body = await req.json();
 
-  // replace milestones cleanly
+  // ✅ 2️⃣ Safe to replace milestones
   await prisma.projectMilestone.deleteMany({
-    where: { projectId: Number(params.id) },
+    where: { projectId },
   });
 
+  // ✅ 3️⃣ Safe update
   const project = await prisma.project.update({
-    where: { id: Number(params.id) },
+    where: { id: projectId },
     data: {
       ...(body.title && { title: body.title }),
       ...(body.slug && { slug: body.slug }),
-      ...(body.shortDescription && { shortDescription: body.shortDescription }),
+      ...(body.shortDescription && {
+        shortDescription: body.shortDescription,
+      }),
       ...(body.description && { description: body.description }),
       ...(body.category && { category: body.category }),
       ...(body.status && { status: body.status }),
@@ -63,15 +98,26 @@ export async function PUT(
   return NextResponse.json(project);
 }
 
+
 // DELETE → admin only
 export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  await requireAdmin(req);
+  const admin = await requireAdmin();
+  if (!admin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id } = await params; // ✅ REQUIRED
+  const projectId = Number(id);
+
+  if (Number.isNaN(projectId)) {
+    return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+  }
 
   await prisma.project.delete({
-    where: { id: Number(params.id) },
+    where: { id: projectId },
   });
 
   return NextResponse.json({ success: true });

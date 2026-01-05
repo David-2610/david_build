@@ -1,26 +1,17 @@
-export const runtime = "nodejs";
-
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// GET /api/projects/[slug]
+export const runtime = "nodejs";
+
 export async function GET(
   _req: Request,
-  context: { params: { slug: string } | Promise<{ slug: string }> }
+  { params }: { params: { slug: string } }
 ) {
   try {
-    // ✅ Unwrap params safely (Next 16 compatible)
-    const { slug } =
-      "then" in context.params
-        ? await context.params
-        : context.params;
-
     const project = await prisma.project.findUnique({
-      where: { slug },
+      where: { slug: params.slug },
       include: {
-        milestones: {
-          orderBy: { createdAt: "asc" },
-        },
+        milestones: { orderBy: { createdAt: "asc" } },
       },
     });
 
@@ -31,7 +22,7 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(project, { status: 200 });
+    return NextResponse.json(project);
   } catch (error) {
     console.error("PROJECT DETAIL ERROR:", error);
     return NextResponse.json(

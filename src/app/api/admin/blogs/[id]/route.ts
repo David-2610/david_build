@@ -1,70 +1,102 @@
-export const runtime = "nodejs";
-
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
 
+export const runtime = "nodejs";
+
 // PUT /api/admin/blogs/[id]
 export async function PUT(
   req: NextRequest,
-  context: { params: { id: string } | Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  await requireAdmin(req);
+  const admin = await requireAdmin();
+  if (!admin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-  try {
-    const { id } =
-      "then" in context.params
-        ? await context.params
-        : context.params;
+  const { id } = await params;
+  const blogId = Number(id);
 
-    const body = await req.json();
+  if (Number.isNaN(blogId)) {
+    return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+  }
 
-    const blog = await prisma.blog.update({
-      where: { id: Number(id) },
-      data: {
-        ...(body.title && { title: body.title }),
-        ...(body.slug && { slug: body.slug }),
-        ...(body.excerpt && { excerpt: body.excerpt }),
-        ...(body.content && { content: body.content }),
+  // ✅ 1️⃣ Check existence FIRST
+  const existing = await prisma.blog.findUnique({
+    where: { id: blogId },
+    select: { id: true },
+  });
 
-        ...(body.coverImage !== undefined && { coverImage: body.coverImage }),
-        ...(body.images !== undefined && { images: body.images }),
-        ...(body.category !== undefined && { category: body.category }),
-        ...(body.tags !== undefined && { tags: body.tags }),
-
-        ...(body.metaTitle !== undefined && { metaTitle: body.metaTitle }),
-        ...(body.metaDescription !== undefined && {
-          metaDescription: body.metaDescription,
-        }),
-        ...(body.ogImage !== undefined && { ogImage: body.ogImage }),
-
-        ...(body.status && { status: body.status }),
-        ...(body.featured !== undefined && { featured: body.featured }),
-      },
-    });
-
-    return NextResponse.json(blog);
-  } catch (error) {
-    console.error("UPDATE BLOG ERROR:", error);
+  if (!existing) {
     return NextResponse.json(
-      { message: "Failed to update blog" },
-      { status: 500 }
+      { message: "Blog not found" },
+      { status: 404 }
     );
   }
+
+  const body = await req.json();
+
+  // ✅ 2️⃣ Safe update
+  const blog = await prisma.blog.update({
+    where: { id: blogId },
+    data: {
+      ...(body.title && { title: body.title }),
+      ...(body.slug && { slug: body.slug }),
+      ...(body.excerpt && { excerpt: body.excerpt }),
+      ...(body.content && { content: body.content }),
+
+      ...(body.coverImage !== undefined && { coverImage: body.coverImage }),
+      ...(body.images !== undefined && { images: body.images }),
+      ...(body.category !== undefined && { category: body.category }),
+      ...(body.tags !== undefined && { tags: body.tags }),
+
+      ...(body.metaTitle !== undefined && { metaTitle: body.metaTitle }),
+      ...(body.metaDescription !== undefined && {
+        metaDescription: body.metaDescription,
+      }),
+      ...(body.ogImage !== undefined && { ogImage: body.ogImage }),
+
+      ...(body.status && { status: body.status }),
+      ...(body.featured !== undefined && { featured: body.featured }),
+    },
+  });
+
+  return NextResponse.json(blog);
 }
+
+// DELETE /api/admin/blogs/[id]
 export async function DELETE(
-  req: NextRequest,
-  context: { params: { id: string } | Promise<{ id: string }> }
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  await requireAdmin(req);
+  const admin = await requireAdmin();
+  if (!admin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-  const { id } =
-    "then" in context.params
-      ? await context.params
-      : context.params;
+  const { id } = await params;
+  const blogId = Number(id);
 
+  if (Number.isNaN(blogId)) {
+    return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+  }
+
+  // ✅ 1️⃣ Check existence FIRST
+  const existing = await prisma.blog.findUnique({
+    where: { id: blogId },
+    select: { id: true },
+  });
+
+  if (!existing) {
+    return NextResponse.json(
+      { message: "Blog not found" },
+      { status: 404 }
+    );
+  }
+
+  // ✅ 2️⃣ Safe delete
   await prisma.blog.delete({
-    where: { id: Number(id) },
+    where: { id: blogId },
   });
 
   return NextResponse.json({ success: true });

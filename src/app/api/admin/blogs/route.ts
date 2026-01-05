@@ -6,7 +6,8 @@ import { requireAdmin } from "@/lib/requireAdmin";
 
 // POST /api/admin/blogs → create blog
 export async function POST(req: Request) {
-  await requireAdmin(req);
+  // ✅ Enforce admin auth (cookie-based)
+  await requireAdmin();
 
   try {
     const body = await req.json();

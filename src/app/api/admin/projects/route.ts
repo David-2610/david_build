@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
+
 export const runtime = "nodejs";
 
 // GET → public project list
@@ -14,10 +15,26 @@ export async function GET() {
 }
 
 // POST → admin only
+// POST → admin only
 export async function POST(req: Request) {
-  await requireAdmin(req); // ✅ enforce
+  const admin = await requireAdmin();
+
+  if (!admin) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
+  }
 
   const body = await req.json();
+
+  // ✅ REQUIRED FIELD VALIDATION
+  if (!body.coverImage) {
+    return NextResponse.json(
+      { error: "coverImage is required" },
+      { status: 400 }
+    );
+  }
 
   const project = await prisma.project.create({
     data: {
@@ -25,7 +42,7 @@ export async function POST(req: Request) {
       slug: body.slug,
       shortDescription: body.shortDescription,
       description: body.description,
-      coverImage: body.coverImage,
+      coverImage: body.coverImage, // ✅ now guaranteed
       techStack: body.techStack,
 
       category: body.category ?? "WEB",
@@ -54,3 +71,4 @@ export async function POST(req: Request) {
 
   return NextResponse.json(project, { status: 201 });
 }
+
