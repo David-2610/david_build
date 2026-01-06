@@ -6,17 +6,23 @@ import { requireAdmin } from "@/lib/requireAdmin";
 
 // POST /api/admin/blogs → create blog
 export async function POST(req: Request) {
-  // ✅ Enforce admin auth (cookie-based)
   await requireAdmin();
 
   try {
     const body = await req.json();
 
+    if (!body.excerpt || typeof body.excerpt !== "string") {
+      return NextResponse.json(
+        { message: "Excerpt is required" },
+        { status: 400 }
+      );
+    }
+
     const blog = await prisma.blog.create({
       data: {
         title: body.title,
         slug: body.slug,
-        excerpt: body.excerpt,
+        excerpt: body.excerpt, // ✅ now guaranteed string
         content: body.content,
 
         coverImage: body.coverImage ?? null,
@@ -24,7 +30,6 @@ export async function POST(req: Request) {
         category: body.category ?? null,
         tags: body.tags ?? null,
 
-        // SEO
         metaTitle: body.metaTitle ?? null,
         metaDescription: body.metaDescription ?? null,
         ogImage: body.ogImage ?? null,
@@ -51,3 +56,4 @@ export async function POST(req: Request) {
     );
   }
 }
+
