@@ -6,7 +6,7 @@ import { cleanupAdminSessions } from "@/lib/sessionCleanup";
 
 // POST /api/admin/sessions/cleanup
 export async function POST(req: Request) {
-  await requireAdmin(req);
+  await requireAdmin();
 
   const deletedCount = await cleanupAdminSessions();
 

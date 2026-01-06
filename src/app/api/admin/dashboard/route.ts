@@ -6,7 +6,8 @@ import { requireAdmin } from "@/lib/requireAdmin";
 
 // GET /api/admin/dashboard → analytics
 export async function GET(req: Request) {
-  await requireAdmin(req);
+  await requireAdmin();
+
 
   try {
     const [

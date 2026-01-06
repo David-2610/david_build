@@ -5,8 +5,15 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
 
 // GET /api/admin/sessions → list sessions
-export async function GET(req: Request) {
-  const admin = await requireAdmin(req);
+export async function GET() {
+  const admin = await requireAdmin();
+
+  if (!admin) {
+    return NextResponse.json(
+      { message: "Unauthorized" },
+      { status: 401 }
+    );
+  }
 
   const sessions = await prisma.adminSession.findMany({
     where: {

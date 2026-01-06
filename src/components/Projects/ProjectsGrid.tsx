@@ -1,4 +1,4 @@
-import { Project } from "@/app/projects/page";
+import type { Project } from "@/types/project";
 import ProjectCard from "./ProjectCard";
 
 export default function ProjectsGrid({

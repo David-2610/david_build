@@ -1,58 +1,18 @@
-"use client";
-
-import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import ProjectsHeader from "@/components/Projects/ProjectsHeader";
-import FeaturedProjects from "@/components/Projects/FeaturedProjects";
-import ProjectsFilter from "@/components/Projects/ProjectsFilter";
-import ProjectsGrid from "@/components/Projects/ProjectsGrid";
-
-export type Project = {
-  id: number;
-  title: string;
-  slug: string;
-  shortDescription: string;
-  category: "WEB" | "AIML" | "GAME";
-  techStack: string[];
-  coverImage: string;
-  featured: boolean;
-  createdAt: string;
-};
+import { Suspense } from "react";
+import ProjectsClient from "./ProjectsClient";
 
 export default function ProjectsPage() {
-  const searchParams = useSearchParams();
-  const category = searchParams.get("category");
-
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/projects", { cache: "no-store" })
-      .then((res) => res.json())
-      .then(setProjects)
-      .finally(() => setLoading(false));
-  }, []);
-
-  const featured = projects.filter((p) => p.featured).slice(0, 2);
-
-  const filteredProjects = useMemo(() => {
-    if (!category || category === "ALL") return projects;
-    return projects.filter((p) => p.category === category);
-  }, [projects, category]);
-
   return (
-    <div className="space-y-16">
-      <ProjectsHeader />
+    <Suspense fallback={<ProjectsLoading />}>
+      <ProjectsClient />
+    </Suspense>
+  );
+}
 
-      <FeaturedProjects projects={featured} />
-
-      <ProjectsFilter active={category ?? "ALL"} />
-
-      <ProjectsGrid
-        projects={filteredProjects}
-        loading={loading}
-        hasFilter={!!category && category !== "ALL"}
-      />
+function ProjectsLoading() {
+  return (
+    <div className="p-10 text-center text-gray-500">
+      Loading projects…
     </div>
   );
 }

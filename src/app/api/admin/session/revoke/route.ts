@@ -6,7 +6,15 @@ import { requireAdmin } from "@/lib/requireAdmin";
 
 // POST /api/admin/sessions/revoke
 export async function POST(req: Request) {
-  const admin = await requireAdmin(req);
+  const admin = await requireAdmin();
+
+  if (!admin) {
+    return NextResponse.json(
+      { message: "Unauthorized" },
+      { status: 401 }
+    );
+  }
+
   const { sessionId } = await req.json();
 
   if (!sessionId) {
@@ -16,7 +24,6 @@ export async function POST(req: Request) {
     );
   }
 
-  // Ensure admin can revoke ONLY their own sessions
   const session = await prisma.adminSession.findFirst({
     where: {
       id: sessionId,

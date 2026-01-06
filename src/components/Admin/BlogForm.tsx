@@ -41,9 +41,8 @@ export default function BlogForm({
 		status: "DRAFT",
 		featured: false,
 		coverImage: "",
-		images: [],
 		...initialData,
-		// 🛡️ HARD NORMALIZATION (THIS LINE MATTERS)
+		// 🛡️ HARD NORMALIZATION (single source of truth)
 		images: Array.isArray(initialData.images) ? initialData.images : [],
 	}));
 
@@ -269,46 +268,74 @@ function TwoCol({ children }: any) {
 	return <div className="grid grid-cols-2 gap-4">{children}</div>;
 }
 
-function Input({ label, value, onChange }: any) {
+type InputProps = {
+	label: string;
+	value: string;
+	onChange: (value: string) => void;
+  };
+  
+  function Input({ label, value, onChange }: InputProps) {
 	return (
-		<div>
-			<label className="label">{label}</label>
-			<input
-				value={value}
-				onChange={(e) => onChange(e.target.value)}
-				className="input"
-			/>
-		</div>
+	  <div>
+		<label className="label">{label}</label>
+		<input
+		  value={value}
+		  onChange={(e) => onChange(e.target.value)}
+		  className="input"
+		/>
+	  </div>
 	);
-}
+  }
+  
 
-function Textarea({ label, value, rows, onChange }: any) {
+  type TextareaProps = {
+	label: string;
+	value: string;
+	rows?: number;
+	onChange: (value: string) => void;
+  };
+  
+  function Textarea({ label, value, rows = 3, onChange }: TextareaProps) {
 	return (
-		<div>
-			<label className="label">{label}</label>
-			<textarea
-				rows={rows}
-				value={value}
-				onChange={(e) => onChange(e.target.value)}
-				className="input"
-			/>
-		</div>
+	  <div>
+		<label className="label">{label}</label>
+		<textarea
+		  rows={rows}
+		  value={value}
+		  onChange={(e) => onChange(e.target.value)}
+		  className="input"
+		/>
+	  </div>
 	);
-}
+  }
+  
 
-function Select({ value, options, onChange }: any) {
+  type SelectProps<T extends string> = {
+	value: T;
+	options: T[];
+	onChange: (value: T) => void;
+  };
+  
+  function Select<T extends string>({
+	value,
+	options,
+	onChange,
+  }: SelectProps<T>) {
 	return (
-		<select
-			value={value}
-			onChange={(e) => onChange(e.target.value)}
-			className="input"
-		>
-			{options.map((o: string) => (
-				<option key={o}>{o}</option>
-			))}
-		</select>
+	  <select
+		value={value}
+		onChange={(e) => onChange(e.target.value as T)}
+		className="input"
+	  >
+		{options.map((o) => (
+		  <option key={o} value={o}>
+			{o}
+		  </option>
+		))}
+	  </select>
 	);
-}
+  }
+  
 
 function MediaBlock({ label, children }: any) {
 	return (

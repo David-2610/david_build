@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Project } from "@/app/projects/page";
+import type { Project } from "@/types/project";
 
 export default function ProjectCard({ project }: { project: Project }) {
   return (
