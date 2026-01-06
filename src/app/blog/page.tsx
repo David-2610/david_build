@@ -36,7 +36,7 @@ export default async function BlogsPage() {
           {blogs.map((blog) => (
             <Link
               key={blog.id}
-              href={`/blogs/${blog.slug}`}
+              href={`/blog/${blog.slug}`}
               className="group border rounded-xl overflow-hidden hover:shadow-lg transition"
             >
               {blog.coverImage && (

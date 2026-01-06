@@ -16,13 +16,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/blogs",
+              "raw": "{{base_url}}/api/blog",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
-                "blogs"
+                "blog"
               ]
             }
           },
@@ -35,13 +35,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/blogs/{{slug}}",
+              "raw": "{{base_url}}/api/blog/{{slug}}",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
-                "blogs",
+                "blog",
                 "{{slug}}"
               ]
             }
@@ -55,13 +55,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/blogs/id/{{id}}",
+              "raw": "{{base_url}}/api/blog/id/{{id}}",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
-                "blogs",
+                "blog",
                 "id",
                 "{{id}}"
               ]

@@ -5,7 +5,7 @@ import { Project } from "@/app/projects/page";
 export default function ProjectCard({ project }: { project: Project }) {
   return (
     <Link
-      href={`/projects/${project.id}`}
+      href={`/projects/${project.slug}`}
       className="group rounded-xl border bg-white overflow-hidden hover:shadow-md transition"
     >
       <div className="relative h-40">
