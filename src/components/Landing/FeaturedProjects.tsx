@@ -1,4 +1,5 @@
 "use client";
+import clsx from "clsx";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -67,7 +68,16 @@ export default function FeaturedProjects() {
 				</motion.div>
 
 				{/* Cards */}
-				<div className="mt-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+				{/* Cards */}
+				<div
+					className={clsx(
+						"mt-16 grid gap-10",
+						projects.length === 1 && "grid-cols-1",
+						projects.length === 2 && "grid-cols-1 sm:grid-cols-2",
+						projects.length === 3 &&
+							"grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+					)}
+				>
 					{projects.map((project, i) => (
 						<motion.div
 							key={project.id}
@@ -87,7 +97,12 @@ export default function FeaturedProjects() {
 								className="relative z-10 block overflow-hidden rounded-2xl bg-white/80 backdrop-blur-xl border border-white/60 shadow-lg"
 							>
 								{/* Image */}
-								<div className="relative h-44 w-full">
+								<div
+									className={clsx(
+										"relative w-full",
+										projects.length === 1 ? "h-64" : "h-44"
+									)}
+								>
 									<Image
 										src={
 											project.coverImage ||
@@ -96,8 +111,8 @@ export default function FeaturedProjects() {
 										alt={project.title}
 										fill
 										sizes="(max-width: 640px) 100vw,
-         (max-width: 1024px) 50vw,
-         33vw"
+                   (max-width: 1024px) 50vw,
+                   33vw"
 										className="object-cover transition-transform duration-500 group-hover:scale-105"
 									/>
 								</div>
