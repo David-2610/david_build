@@ -1,36 +1,245 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 David Build – Portfolio Website
 
-## Getting Started
+A modern, full-stack **portfolio website** built with **Next.js** to showcase my projects, skills, and achievements.
+The application uses **Cloudinary** for image management, **Prisma** for database access, and a clean, responsive UI powered by **Tailwind CSS** and **Radix UI**.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✨ Features
+
+* ⚡ Built with **Next.js (App Router)**
+* 🖼️ **Cloudinary integration** for image upload & optimization
+* 🧠 **Prisma ORM** for database interactions
+* 🔐 Authentication utilities using **JWT & bcrypt**
+* ✍️ Rich text editor using **Tiptap**
+* 🎨 Modern UI with **Tailwind CSS**, **Radix UI**, and **Framer Motion**
+* 📱 Fully responsive design
+* 🧩 Scalable project structure
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* Next.js 16
+* React 19
+* Tailwind CSS
+* Radix UI
+* Framer Motion
+* Lucide Icons
+
+### Backend / Tools
+
+* Prisma
+* JWT Authentication
+* bcrypt / bcryptjs
+* Cloudinary (`next-cloudinary`)
+* TypeScript
+
+---
+
+## 📂 Project Structure (Simplified)
+
+```
+└── 📁src
+    └── 📁app
+        └── 📁admin
+            └── 📁(dashboard)
+                └── 📁blog
+                    └── 📁[id]
+                        ├── page.tsx
+                    └── 📁new
+                        ├── page.tsx
+                    ├── page.tsx
+                └── 📁projects
+                    └── 📁[id]
+                        ├── page.tsx
+                    └── 📁new
+                        ├── page.tsx
+                    ├── page.tsx
+                ├── layout.tsx
+                ├── page.tsx
+            └── 📁login
+                ├── layout.tsx
+                ├── page.tsx
+            ├── layout.tsx
+        └── 📁api
+            └── 📁admin
+                └── 📁blog
+                    └── 📁[id]
+                        ├── route.ts
+                    ├── route.ts
+                └── 📁dashboard
+                    ├── route.ts
+                └── 📁login
+                    ├── route.ts
+                └── 📁logout
+                    ├── route.ts
+                └── 📁projects
+                    └── 📁[id]
+                        ├── route.ts
+                    ├── route.ts
+                └── 📁session
+                    └── 📁cleanup
+                        ├── route.ts
+                    └── 📁revoke
+                        ├── route.ts
+                    ├── route.ts
+            └── 📁blog
+                └── 📁[slug]
+                    ├── route.ts
+                └── 📁id
+                    └── 📁[id]
+                        ├── route.ts
+                ├── route.ts
+            └── 📁projects
+                └── 📁[slug]
+                    ├── route.ts
+                └── 📁featured
+                    ├── route.ts
+                └── 📁id
+                    └── 📁[id]
+                        ├── route.ts
+                ├── route.ts
+        └── 📁blog
+            └── 📁[slug]
+                ├── page.tsx
+            ├── page.tsx
+        └── 📁experience
+            ├── page.tsx
+        └── 📁links
+            ├── page.tsx
+        └── 📁projects
+            └── 📁[slug]
+                ├── page.tsx
+            ├── page.tsx
+            ├── ProjectsClient.tsx
+        ├── error.tsx
+        ├── globals.css
+        ├── layout.tsx
+        ├── not-found.tsx
+        ├── page.tsx
+    └── 📁components
+        └── 📁Admin
+            ├── AdminSidebar.tsx
+            ├── BlogForm.tsx
+            ├── BlogPreviewModal.tsx
+            ├── ProjectForm.tsx
+        └── 📁editor
+            ├── RichTextEditor.tsx
+        └── 📁Landing
+            ├── FeaturedProjects.tsx
+            ├── hero.tsx
+            ├── What_I_Work_On.tsx
+        └── 📁Projects
+            ├── FeaturedProjects.tsx
+            ├── ProjectCard.tsx
+            ├── ProjectsFilter.tsx
+            ├── ProjectsGrid.tsx
+            ├── ProjectsHeader.tsx
+        └── 📁ui
+            ├── avatar.tsx
+            ├── badge.tsx
+            ├── button.tsx
+            ├── card.tsx
+            ├── dialog.tsx
+            ├── dropdown-menu.tsx
+            ├── separator.tsx
+            ├── table.tsx
+        ├── Blogcard.tsx
+        ├── Footer.tsx
+        ├── Navbar.tsx
+        ├── Projectcard.tsx
+    └── 📁lib
+        ├── adminFetch.ts
+        ├── auth.ts
+        ├── fonts.ts
+        ├── jwt.ts
+        ├── password.ts
+        ├── prisma.ts
+        ├── requireAdmin.ts
+        ├── sessionCleanup.ts
+        ├── upload.ts
+        ├── uploadVideo.ts
+        ├── utils.ts
+    └── 📁types
+        ├── project.ts
+    └── proxy.ts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ☁️ Cloudinary Integration
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Cloudinary is used for:
 
-## Learn More
+* Image uploads
+* Automatic optimization
+* Fast CDN delivery
 
-To learn more about Next.js, take a look at the following resources:
+Add the following environment variables to your `.env` file:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🧪 Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+npm run dev     # Start development server
+npm run build   # Build for production
+npm run start   # Start production server
+npm run lint    # Run ESLint
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🗄️ Prisma Setup
+
+```
+npx prisma generate
+npx prisma migrate dev
+npx prisma db seed
+```
+
+---
+
+## 🚀 Getting Started
+
+```
+git clone https://github.com/your-username/david_build.git
+cd david_build
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000` in your browser.
+
+---
+
+## 📌 Purpose
+
+This project is built to:
+
+* Showcase my **projects & skills**
+* Serve as a **resume-grade portfolio**
+* Demonstrate real-world **Next.js + Cloudinary + Prisma** usage
+
+---
+
+## 👤 Author
+
+**David Tembhare**
+B.Tech CSE (AI)
+University of Allahabad
+
+---
+
+## 📜 License
+
+This project is **open-source** and available under the **MIT License**.
