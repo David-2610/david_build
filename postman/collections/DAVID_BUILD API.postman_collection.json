@@ -10,7 +10,7 @@
       "name": "Public",
       "item": [
         {
-          "name": "GET /api/blogs",
+          "name": "GET /api/blog",
           "id": "5885a0c3-7bdd-40ba-9f9c-9a7b353d7dc6",
           "request": {
             "method": "GET",
@@ -29,7 +29,7 @@
           "response": []
         },
         {
-          "name": "GET /api/blogs/[slug]",
+          "name": "GET /api/blog/[slug]",
           "id": "11084b1f-6088-4e6c-8447-6f844a23154b",
           "request": {
             "method": "GET",
@@ -49,7 +49,7 @@
           "response": []
         },
         {
-          "name": "GET /api/blogs/id/[id]",
+          "name": "GET /api/blog/id/[id]",
           "id": "c4eda364-bbd5-41ce-a35b-2be393b48536",
           "request": {
             "method": "GET",
@@ -191,10 +191,10 @@
           "id": "f84c44bf-6817-43bd-8363-c25ffb42830a"
         },
         {
-          "name": "Blogs",
+          "name": "blog",
           "item": [
             {
-              "name": "POST /api/admin/blogs",
+              "name": "POST /api/admin/blog",
               "id": "07cb5289-ffe0-46be-97cb-3f0def5c8d43",
               "request": {
                 "method": "POST",
@@ -209,21 +209,21 @@
                   "raw": "{\n  \"title\": \"Post title\",\n  \"slug\": \"post-slug\",\n  \"excerpt\": \"Short excerpt\",\n  \"content\": \"Markdown content...\",\n  \"status\": \"DRAFT\",\n  \"featured\": false\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/admin/blogs",
+                  "raw": "{{base_url}}/api/admin/blog",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "api",
                     "admin",
-                    "blogs"
+                    "blog"
                   ]
                 }
               },
               "response": []
             },
             {
-              "name": "PUT /api/admin/blogs/[id]",
+              "name": "PUT /api/admin/blog/[id]",
               "id": "9083d444-328f-4a2a-90e1-d79d69a95a0f",
               "request": {
                 "method": "PUT",
@@ -238,14 +238,14 @@
                   "raw": "{\n  \"title\": \"Updated title\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/admin/blogs/{{id}}",
+                  "raw": "{{base_url}}/api/admin/blog/{{id}}",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "api",
                     "admin",
-                    "blogs",
+                    "blog",
                     "{{id}}"
                   ]
                 }
@@ -253,20 +253,20 @@
               "response": []
             },
             {
-              "name": "DELETE /api/admin/blogs/[id]",
+              "name": "DELETE /api/admin/blog/[id]",
               "id": "ca3cad5a-b1ba-4979-bedd-e6f4e84c7bc0",
               "request": {
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/blogs/{{id}}",
+                  "raw": "{{base_url}}/api/admin/blog/{{id}}",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "api",
                     "admin",
-                    "blogs",
+                    "blog",
                     "{{id}}"
                   ]
                 }
@@ -382,6 +382,18 @@
         }
       ],
       "id": "634883a7-cebd-4091-a86d-dcee7a4f0b7a"
+    },
+    {
+      "name": "New Request",
+      "id": "5152da10-8f45-4cb5-8d41-a0b5480d3c42",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
     }
   ],
   "variable": [

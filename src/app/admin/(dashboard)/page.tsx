@@ -13,14 +13,14 @@ import {
 type DashboardData = {
   stats: {
     projects: number;
-    blogs: number;
-    publishedBlogs: number;
-    draftBlogs: number;
+    blog: number;
+    publishedblog: number;
+    draftblog: number;
     blogViews: number;
     projectViews: number;
   };
   recent: {
-    blogs: {
+    blog: {
       id: number;
       title: string;
       createdAt: string;
@@ -32,7 +32,7 @@ type DashboardData = {
     }[];
   };
   featured: {
-    blogs: {
+    blog: {
       id: number;
       title: string;
       slug: string;
@@ -93,9 +93,9 @@ export default function AdminDashboardPage() {
       {/* ================= STATS ================= */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard label="Projects" value={stats.projects} icon={FolderKanban} />
-        <StatCard label="Blogs" value={stats.blogs} icon={FileText} />
-        <StatCard label="Published Blogs" value={stats.publishedBlogs} />
-        <StatCard label="Draft Blogs" value={stats.draftBlogs} />
+        <StatCard label="blog" value={stats.blog} icon={FileText} />
+        <StatCard label="Published blog" value={stats.publishedblog} />
+        <StatCard label="Draft blog" value={stats.draftblog} />
         <StatCard label="Blog Views" value={stats.blogViews} icon={Eye} />
         <StatCard
           label="Project Views"
@@ -106,11 +106,11 @@ export default function AdminDashboardPage() {
 
       {/* ================= RECENT ================= */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <Panel title="Recent Blogs">
-          {recent.blogs.map((b) => (
+        <Panel title="Recent blog">
+          {recent.blog.map((b) => (
             <Item
               key={b.id}
-              href={`/admin/blogs/${b.id}`}
+              href={`/admin/blog/${b.id}`}
               title={b.title}
               date={b.createdAt}
             />
@@ -131,11 +131,11 @@ export default function AdminDashboardPage() {
 
       {/* ================= FEATURED ================= */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <Panel title="Featured Blogs" icon={Star}>
-          {featured.blogs.map((b) => (
+        <Panel title="Featured blog" icon={Star}>
+          {featured.blog.map((b) => (
             <Item
               key={b.id}
-              href={`/admin/blogs/${b.id}`}
+              href={`/admin/blog/${b.id}`}
               title={b.title}
             />
           ))}

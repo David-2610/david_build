@@ -14,12 +14,12 @@ export default function EditBlogPage() {
   /* ================= FETCH BLOG ================= */
   useEffect(() => {
     async function load() {
-      const res = await fetch(`/api/blogs/id/${id}`, {
+      const res = await fetch(`/api/blog/id/${id}`, {
         cache: "no-store",
       });
 
       if (!res.ok) {
-        router.push("/admin/blogs");
+        router.push("/admin/blog");
         return;
       }
 
@@ -47,11 +47,11 @@ export default function EditBlogPage() {
     try {
       setDeleting(true);
 
-      await adminFetch(`/api/admin/blogs/${id}`, {
+      await adminFetch(`/api/admin/blog/${id}`, {
         method: "DELETE",
       });
 
-      router.push("/admin/blogs");
+      router.push("/admin/blog");
     } catch (err) {
       console.error("DELETE BLOG ERROR:", err);
       alert("Failed to delete blog");
@@ -83,7 +83,7 @@ export default function EditBlogPage() {
           initialData={blog}
           submitLabel="Save Changes"
           onSubmit={async (data) => {
-            await adminFetch(`/api/admin/blogs/${id}`, {
+            await adminFetch(`/api/admin/blog/${id}`, {
               method: "PUT",
               body: JSON.stringify({
                 ...data,
@@ -93,7 +93,7 @@ export default function EditBlogPage() {
               }),
             });
 
-            router.push("/admin/blogs");
+            router.push("/admin/blog");
           }}
         />
       </div>

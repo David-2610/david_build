@@ -4,7 +4,7 @@ import { useState } from "react";
 import { uploadFile } from "@/lib/upload";
 import RichTextEditor from "@/components/editor/RichTextEditor";
 
-type BlogStatus = "DRAFT" | "PUBLISHED";
+type blogtatus = "DRAFT" | "PUBLISHED";
 type UploadType = "cover" | "gallery" | null;
 
 type BlogFormData = {
@@ -14,7 +14,7 @@ type BlogFormData = {
 	content: string;
 	category: string;
 	tags: string;
-	status: BlogStatus;
+	status: blogtatus;
 	featured: boolean;
 	coverImage: string;
 	images: string[];
@@ -128,7 +128,7 @@ export default function BlogForm({
 							setUploading("cover");
 							const url = await uploadFile(
 								e.target.files[0],
-								"blogs"
+								"blog"
 							);
 							setForm((f) => ({ ...f, coverImage: url }));
 							setUploading(null);
@@ -169,7 +169,7 @@ export default function BlogForm({
 
 							const uploaded: string[] = [];
 							for (const file of Array.from(e.target.files)) {
-								uploaded.push(await uploadFile(file, "blogs"));
+								uploaded.push(await uploadFile(file, "blog"));
 							}
 
 							setForm((f) => ({
@@ -219,7 +219,7 @@ export default function BlogForm({
 						value={form.status}
 						options={["DRAFT", "PUBLISHED"]}
 						onChange={(v) =>
-							setForm({ ...form, status: v as BlogStatus })
+							setForm({ ...form, status: v as blogtatus })
 						}
 					/>
 				</TwoCol>

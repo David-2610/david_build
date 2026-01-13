@@ -12,7 +12,7 @@ export default function NewBlogPage() {
       <BlogForm
         submitLabel="Create Blog"
         onSubmit={async (data) => {
-          await adminFetch("/api/admin/blogs", {
+          await adminFetch("/api/admin/blog", {
             method: "POST",
             body: JSON.stringify({
               ...data,
@@ -23,7 +23,7 @@ export default function NewBlogPage() {
           });
 
           // ✅ simple + reliable
-          router.push("/admin/blogs");
+          router.push("/admin/blog");
         }}
       />
     </div>

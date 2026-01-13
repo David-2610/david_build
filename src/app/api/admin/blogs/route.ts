@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
 
-// POST /api/admin/blogs → create blog
+// POST /api/admin/blog → create blog
 export async function POST(req: Request) {
   await requireAdmin();
 

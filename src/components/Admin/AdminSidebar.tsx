@@ -47,7 +47,7 @@ export default function AdminSidebar() {
       <nav className="flex-1 space-y-1">
         {navLink("/admin", "Dashboard")}
         {navLink("/admin/projects", "Projects")}
-        {navLink("/admin/blogs", "Blogs")}
+        {navLink("/admin/blog", "blog")}
       <button
         onClick={handleLogout}
         disabled={loggingOut}

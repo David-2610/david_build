@@ -13,14 +13,14 @@ export async function GET(req: Request) {
     const [
       projectCount,
       blogCount,
-      publishedBlogs,
-      draftBlogs,
+      publishedblog,
+      draftblog,
       totalBlogViews,
       totalProjectViews,
-      recentBlogs,
+      recentblog,
       recentProjects,
       featuredProjects,
-      featuredBlogs,
+      featuredblog,
     ] = await Promise.all([
       prisma.project.count(),
       prisma.blog.count(),
@@ -83,20 +83,20 @@ export async function GET(req: Request) {
     return NextResponse.json({
       stats: {
         projects: projectCount,
-        blogs: blogCount,
-        publishedBlogs,
-        draftBlogs,
+        blog: blogCount,
+        publishedblog,
+        draftblog,
         blogViews: totalBlogViews._sum.views ?? 0,
         projectViews: totalProjectViews._sum.views ?? 0,
       },
 
       recent: {
-        blogs: recentBlogs,
+        blog: recentblog,
         projects: recentProjects,
       },
 
       featured: {
-        blogs: featuredBlogs,
+        blog: featuredblog,
         projects: featuredProjects,
       },
     });

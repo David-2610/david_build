@@ -20,11 +20,11 @@ type Blog = {
 	createdAt: string;
 };
 
-export default function AdminBlogsPage() {
+export default function AdminblogPage() {
 	const router = useRouter();
 	const [previewBlog, setPreviewBlog] = useState<any | null>(null);
 
-	const [blogs, setBlogs] = useState<Blog[]>([]);
+	const [blog, setblog] = useState<Blog[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
@@ -45,20 +45,20 @@ export default function AdminBlogsPage() {
 					throw new Error("Auth failed");
 				}
 
-				// 📦 Fetch blogs (admin can see all)
-				const res = await fetch("/api/blogs", {
+				// 📦 Fetch blog (admin can see all)
+				const res = await fetch("/api/blog", {
 					cache: "no-store",
 				});
 
 				if (!res.ok) {
-					throw new Error("Failed to load blogs");
+					throw new Error("Failed to load blog");
 				}
 
 				const data = await res.json();
-				setBlogs(data);
+				setblog(data);
 			} catch (err) {
 				console.error(err);
-				setError("Failed to load blogs");
+				setError("Failed to load blog");
 			} finally {
 				setLoading(false);
 			}
@@ -70,7 +70,7 @@ export default function AdminBlogsPage() {
 	if (loading) {
 		return (
 			<div className="flex items-center justify-center h-[60vh] text-gray-500">
-				Loading blogs…
+				Loading blog…
 			</div>
 		);
 	}
@@ -87,10 +87,10 @@ export default function AdminBlogsPage() {
 		<div className="space-y-8">
 			{/* Header */}
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-				<h1 className="text-2xl font-bold text-[#2B41B0]">Blogs</h1>
+				<h1 className="text-2xl font-bold text-[#2B41B0]">blog</h1>
 
 				<Link
-					href="/admin/blogs/new"
+					href="/admin/blog/new"
 					className="inline-flex items-center gap-2 rounded-lg bg-[#2B41B0] px-4 py-2 text-sm font-semibold text-white hover:scale-[1.05] transition"
 				>
 					+ New Blog
@@ -98,9 +98,9 @@ export default function AdminBlogsPage() {
 			</div>
 
 			{/* Grid */}
-			{blogs.length > 0 && (
+			{blog.length > 0 && (
 				<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-					{blogs.map((blog) => (
+					{blog.map((blog) => (
 						<div
 							key={blog.id}
 							className="group rounded-2xl border bg-white shadow-sm transition hover:shadow-lg hover:-translate-y-1"
@@ -185,7 +185,7 @@ export default function AdminBlogsPage() {
 									<button
 										onClick={async () => {
 											const res = await fetch(
-												`/api/blogs/id/${blog.id}`,
+												`/api/blog/id/${blog.id}`,
 												{
 													cache: "no-store",
 												}
@@ -200,7 +200,7 @@ export default function AdminBlogsPage() {
 									</button>
 
 									<Link
-										href={`/admin/blogs/${blog.id}`}
+										href={`/admin/blog/${blog.id}`}
 										className="inline-flex items-center gap-1 text-sm font-semibold text-[#2B41B0] hover:underline"
 									>
 										<Pencil className="h-4 w-4" />
@@ -214,16 +214,16 @@ export default function AdminBlogsPage() {
 			)}
 
 			{/* Empty state */}
-			{blogs.length === 0 && (
+			{blog.length === 0 && (
 				<div className="rounded-2xl border bg-white p-12 text-center space-y-4">
-					<p className="text-gray-500 text-lg">No blogs found.</p>
+					<p className="text-gray-500 text-lg">No blog found.</p>
 
 					<p className="text-sm text-gray-400">
 						Start by creating your first blog post.
 					</p>
 
 					<Link
-						href="/admin/blogs/new"
+						href="/admin/blog/new"
 						className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2B41B0] px-5 py-2.5 text-sm font-semibold text-white hover:scale-[1.05] transition"
 					>
 						+ Create New Blog

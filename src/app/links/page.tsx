@@ -47,10 +47,10 @@ export default function LinksPage() {
             </a>
   
             <a
-              href="/blogs"
+              href="/blog"
               className="w-full rounded-xl border px-6 py-4 text-lg font-medium hover:bg-gray-100 transition"
             >
-              ✍️ Read Blogs
+              ✍️ Read blog
             </a>
   
           </div>

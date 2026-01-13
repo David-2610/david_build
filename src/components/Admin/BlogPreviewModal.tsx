@@ -128,7 +128,7 @@ export default function BlogPreviewModal({ blog, onClose }: Props) {
 					</button>
 
 					<Link
-						href={`/admin/blogs/${blog.id}`}
+						href={`/admin/blog/${blog.id}`}
 						className="rounded-lg bg-[#2B41B0] px-4 py-2 text-sm font-semibold text-white"
 					>
 						Edit Blog

@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// GET /api/blogs → list published blogs (PUBLIC)
+// GET /api/blog → list published blog (PUBLIC)
 export async function GET() {
   try {
-    const blogs = await prisma.blog.findMany({
+    const blog = await prisma.blog.findMany({
       orderBy: {
         createdAt: "desc",
       },
@@ -20,11 +20,11 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json(blogs, { status: 200 });
+    return NextResponse.json(blog, { status: 200 });
   } catch (error) {
-    console.error("GET BLOGS ERROR:", error);
+    console.error("GET blog ERROR:", error);
     return NextResponse.json(
-      { message: "Failed to fetch blogs" },
+      { message: "Failed to fetch blog" },
       { status: 500 }
     );
   }

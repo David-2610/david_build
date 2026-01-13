@@ -6,7 +6,7 @@ export function proxy(req: NextRequest) {
   // 🌍 PUBLIC ROUTES
   if (
     pathname.startsWith("/api/projects") ||
-    pathname.startsWith("/api/blogs") ||
+    pathname.startsWith("/api/blog") ||
     pathname === "/api/admin/login" ||
     pathname === "/api/admin/logout"
   ) {

@@ -1,6 +1,6 @@
 export const uploadFile = async (
     file: File,
-    folder: "blogs" | "projects"
+    folder: "blog" | "projects"
   ) => {
     const formData = new FormData();
     formData.append("file", file);

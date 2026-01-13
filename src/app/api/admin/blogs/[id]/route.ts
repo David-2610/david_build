@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/requireAdmin";
 
 export const runtime = "nodejs";
 
-// PUT /api/admin/blogs/[id]
+// PUT /api/admin/blog/[id]
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -64,7 +64,7 @@ export async function PUT(
   return NextResponse.json(blog);
 }
 
-// DELETE /api/admin/blogs/[id]
+// DELETE /api/admin/blog/[id]
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }

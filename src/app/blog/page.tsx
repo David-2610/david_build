@@ -6,8 +6,8 @@ export const metadata = {
   description: "Articles, tutorials, and insights",
 };
 
-export default async function BlogsPage() {
-  const blogs = await prisma.blog.findMany({
+export default async function blogPage() {
+  const blog = await prisma.blog.findMany({
     where: { status: "PUBLISHED" },
     orderBy: { createdAt: "desc" },
     select: {
@@ -29,11 +29,11 @@ export default async function BlogsPage() {
         </p>
       </header>
 
-      {blogs.length === 0 ? (
-        <p className="text-gray-500">No blogs published yet.</p>
+      {blog.length === 0 ? (
+        <p className="text-gray-500">No blog published yet.</p>
       ) : (
         <div className="grid gap-8 md:grid-cols-2">
-          {blogs.map((blog) => (
+          {blog.map((blog) => (
             <Link
               key={blog.id}
               href={`/blog/${blog.slug}`}

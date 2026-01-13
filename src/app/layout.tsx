@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 		template: "%s | David Tembhare",
 	},
 	description:
-		"Portfolio of David Tembhare – Developer, Projects, Blogs, Experience",
+		"Portfolio of David Tembhare – Developer, Projects, blog, Experience",
 	keywords: ["David Tembhare", "Portfolio", "Next.js", "Developer"],
 	authors: [{ name: "David Tembhare" }],
 	metadataBase: new URL("https://your-domain.com"),

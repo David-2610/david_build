@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// GET /api/blogs/[slug] → public blog + increment views
+// GET /api/blog/[slug] → public blog + increment views
 export async function GET(
   _req: Request,
   context: { params: { slug: string } | Promise<{ slug: string }> }
