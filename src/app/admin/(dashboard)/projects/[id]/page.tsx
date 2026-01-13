@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { uploadFile } from "@/lib/upload";
+import { uploadVideo } from "@/lib/uploadVideo";
 
 /* ================= TYPES ================= */
 
@@ -21,16 +22,27 @@ type ProjectForm = {
 	slug: string;
 	shortDescription: string;
 	description: string;
+
 	techStack: string;
-	images: string[];
+
 	coverImage?: string;
+	images: string[];
+	videoUrl?: string | null;
+
+	link?: string | null;
+	githubUrl?: string | null;
+
 	category: Category;
 	status: Status;
+
 	featured: boolean;
 	order?: number | "";
+
 	views: number;
-	startDate?: string;
-	endDate?: string;
+
+	startDate?: string | null;
+	endDate?: string | null;
+
 	milestones: Milestone[];
 };
 
@@ -68,13 +80,33 @@ export default function EditProjectPage() {
 				const data = await res.json();
 
 				setForm({
-					...data,
+					title: data.title,
+					slug: data.slug,
+					shortDescription: data.shortDescription,
+					description: data.description,
+
 					techStack: Array.isArray(data.techStack)
 						? data.techStack.join(", ")
 						: "",
+
+					coverImage: data.coverImage,
 					images: data.images ?? [],
-					startDate: data.startDate?.slice(0, 10),
-					endDate: data.endDate?.slice(0, 10),
+					videoUrl: data.videoUrl ?? null,
+
+					link: data.link ?? null,
+					githubUrl: data.githubUrl ?? null,
+
+					category: data.category,
+					status: data.status,
+
+					featured: data.featured ?? false,
+					order: data.order ?? "",
+
+					views: data.views ?? 0,
+
+					startDate: data.startDate?.slice(0, 10) ?? null,
+					endDate: data.endDate?.slice(0, 10) ?? null,
+
 					milestones: data.milestones ?? [],
 				});
 
@@ -101,11 +133,33 @@ export default function EditProjectPage() {
 				credentials: "include",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					...form,
-					techStack: form.techStack.split(",").map((t) => t.trim()),
+					title: form.title,
+					slug: form.slug,
+					shortDescription: form.shortDescription,
+					description: form.description,
+
+					category: form.category,
+					status: form.status,
+
+					techStack: form.techStack
+						.split(",")
+						.map((t) => t.trim())
+						.filter(Boolean),
+
+					coverImage: form.coverImage,
+					images: form.images,
+					videoUrl: form.videoUrl ?? null,
+
+					link: form.link ?? null,
+					githubUrl: form.githubUrl ?? null,
+
+					featured: form.featured,
 					order: form.order === "" ? null : Number(form.order),
+
 					startDate: form.startDate || null,
 					endDate: form.endDate || null,
+
+					milestones: form.milestones,
 				}),
 			});
 
@@ -173,75 +227,159 @@ export default function EditProjectPage() {
 					/>
 				</Section>
 
-				<Section title="🖼 Media">
-					<MediaBlock label="Cover Image">
+				<Section title="🖼 Media Uploads">
+					{/* ================= Cover Image ================= */}
+					<div className="border rounded-lg p-4">
+						<label className="label">Cover Image</label>
+
 						<input
 							type="file"
 							accept="image/*"
+							disabled={uploading !== null}
 							onChange={async (e) => {
 								if (!e.target.files?.[0]) return;
 								setUploading("cover");
-								const url = await uploadFile(
-									e.target.files[0],
-									"projects"
-								);
-								setForm({ ...form, coverImage: url });
-								setUploading(null);
+
+								try {
+									const url = await uploadFile(
+										e.target.files[0],
+										"projects"
+									);
+									setForm({ ...form, coverImage: url });
+								} finally {
+									setUploading(null);
+								}
 							}}
 						/>
 
-						{form.coverImage && (
-							<Preview
-								src={form.coverImage}
-								onRemove={() =>
-									setForm({ ...form, coverImage: undefined })
-								}
-							/>
+						{uploading === "cover" && (
+							<UploadProgress label="Uploading cover…" />
 						)}
-					</MediaBlock>
 
-					<MediaBlock label="Gallery">
+						{form.coverImage && (
+							<div className="relative mt-3 inline-block">
+								<img
+									src={form.coverImage}
+									className="h-40 rounded object-cover border"
+								/>
+								<button
+									type="button"
+									onClick={() =>
+										setForm({
+											...form,
+											coverImage: undefined,
+										})
+									}
+									className="absolute top-2 right-2 bg-black/70 text-white rounded-full px-2"
+								>
+									✕
+								</button>
+							</div>
+						)}
+					</div>
+
+					{/* ================= Gallery Images ================= */}
+					<div className="border rounded-lg p-4">
+						<label className="label">Gallery Images</label>
+
 						<input
 							type="file"
-							multiple
 							accept="image/*"
+							multiple
+							disabled={uploading !== null}
 							onChange={async (e) => {
 								if (!e.target.files) return;
 								setUploading("gallery");
 
-								const uploaded: string[] = [];
-								for (const file of Array.from(e.target.files)) {
-									uploaded.push(
-										await uploadFile(file, "projects")
-									);
+								try {
+									const uploaded: string[] = [];
+									for (const file of Array.from(
+										e.target.files
+									)) {
+										uploaded.push(
+											await uploadFile(file, "projects")
+										);
+									}
+
+									setForm({
+										...form,
+										images: [...form.images, ...uploaded],
+									});
+								} finally {
+									setUploading(null);
 								}
-
-								setForm({
-									...form,
-									images: [...form.images, ...uploaded],
-								});
-
-								setUploading(null);
 							}}
 						/>
 
-						<div className="grid grid-cols-4 gap-4 mt-4">
+						{uploading === "gallery" && (
+							<UploadProgress label="Uploading images…" />
+						)}
+
+						<div className="mt-4 grid grid-cols-4 gap-4">
 							{form.images.map((img, i) => (
-								<Preview
+								<div
 									key={i}
-									src={img}
-									onRemove={() =>
-										setForm({
-											...form,
-											images: form.images.filter(
-												(_, idx) => idx !== i
-											),
-										})
-									}
-								/>
+									className="relative group border rounded-lg overflow-hidden"
+								>
+									<img
+										src={img}
+										className="h-24 w-full object-cover"
+									/>
+									<button
+										type="button"
+										onClick={() =>
+											setForm({
+												...form,
+												images: form.images.filter(
+													(_, idx) => idx !== i
+												),
+											})
+										}
+										className="absolute top-2 right-2 bg-black/70 text-white rounded-full px-2 opacity-0 group-hover:opacity-100 transition"
+									>
+										✕
+									</button>
+								</div>
 							))}
 						</div>
-					</MediaBlock>
+					</div>
+
+					{/* ================= Project Video ================= */}
+					<div className="border rounded-lg p-4">
+						<label className="label">Project Video</label>
+
+						<input
+							type="file"
+							accept="video/*"
+							disabled={uploading !== null}
+							onChange={async (e) => {
+								if (!e.target.files?.[0]) return;
+								setUploading("video");
+
+								try {
+									const url = await uploadVideo(
+										e.target.files[0],
+										"projects"
+									);
+									setForm({ ...form, videoUrl: url });
+								} finally {
+									setUploading(null);
+								}
+							}}
+						/>
+
+						{uploading === "video" && (
+							<UploadProgress label="Uploading video…" />
+						)}
+
+						{form.videoUrl && (
+							<video
+								src={form.videoUrl}
+								controls
+								className="mt-3 h-48 rounded"
+							/>
+						)}
+					</div>
 				</Section>
 
 				<Section title="⚙ Settings">
@@ -415,6 +553,16 @@ function Preview({ src, onRemove }: PreviewProps) {
 			>
 				✕
 			</button>
+		</div>
+	);
+}
+function UploadProgress({ label }: { label: string }) {
+	return (
+		<div className="mt-3 space-y-1">
+			<p className="text-sm text-gray-600">{label}</p>
+			<div className="h-2 w-full rounded bg-gray-200 overflow-hidden">
+				<div className="h-full bg-[#2B41B0] animate-progress" />
+			</div>
 		</div>
 	);
 }

@@ -80,7 +80,7 @@ const Navbar = () => {
 					<div className="flex items-center gap-2">
 						{/* CV Button */}
 						<Link
-							href="/email-cv"
+							href="/cv/David_Tembhare.pdf"
 							className="relative overflow-hidden flex items-center gap-2 rounded-md font-semibold text-white bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-blue-500/30 active:scale-[0.97]"
 						>
 							<span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700" />
